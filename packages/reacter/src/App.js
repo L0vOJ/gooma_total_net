@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import React from 'react';
+// import React from 'react';
 import { gql, useQuery } from '@apollo/client';
 
 const GET_POSTS = gql`

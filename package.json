@@ -8,6 +8,9 @@
   ],
   "scripts": {
     "build": "yarn workspaces run build",
+    "build:react":"cd ./packages/reacter && yarn build",
+    "copy:build":"cp -r ./packages/reacter/build ./packages/gate/.keystone/public",
+    "build:react:full":"yarn build:react && yarn copy:build", 
     "dev": "yarn workspaces run dev"
   }
 }
