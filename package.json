@@ -7,10 +7,11 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "yarn workspaces run build",
+    "build:all": "yarn workspaces run build",
     "build:react":"cd ./packages/reacter && yarn build",
-    "copy:build":"cp -r ./packages/reacter/build ./packages/gate/.keystone/public",
-    "build:react:full":"yarn build:react && yarn copy:build", 
+    "copy:build":"cp -r ./packages/reacter/build ./packages/gate/.keystone/",
+    "build":"yarn build:all && yarn copy:build", 
+    "start":"cd ./packages/gate && yarn start",
     "dev": "yarn workspaces run dev"
   }
 }
