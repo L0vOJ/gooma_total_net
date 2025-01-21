@@ -1,0 +1,153 @@
+/* Reset some default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+/* Basic body styling */
+body {
+    /* font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f4f4f4;
+    color: #333; */
+    background-color: #282c34;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
+}
+
+.title-logo {
+    height: 30vmin;
+    pointer-events: none;
+    border-radius: 3vmin;
+}
+
+.head-logo {
+    border: 2px solid #000000;
+    height: 8vmin;
+    /* min-height: 40px; */
+    pointer-events: none;
+    border-radius: 1vmin;
+}
+
+.text_default{
+    width: 100%;
+    height: 70%;
+    font-weight: 100;
+    font-size: 3vmin;
+    font-weight: bold;
+    color: rgb(0, 0, 0);
+    background-color: rgba(255, 255, 255, 0);
+}
+
+/* Container for centering content */
+.container {
+    width: 90%;
+    margin: 0 auto;
+    max-width: 1200px;
+}
+
+/* Header styling */
+header {
+    background: #333;
+    color: #fff;
+    padding: 20px 0;
+}
+
+header h1 {
+    display: inline-block;
+    font-size: 2rem;
+}
+
+nav ul {
+    list-style: none;
+    text-align: right;
+    padding-top: 5px;
+}
+
+nav ul li {
+    display: inline-block;
+    margin-left: 20px;
+}
+
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+nav ul li a:hover {
+    text-decoration: underline;
+}
+
+/* Main content section */
+main {
+    width: 50vmin;
+    padding: 20px 0;
+    background-color: #35a3a7;
+    border-radius: 5px;
+}
+
+section {
+    margin-bottom: 30px;
+}
+
+h2 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+}
+
+.service-item {
+    border: 2px solid #1f5363;
+    background-color: #38c9b5;
+    margin: 10px 0;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+.service-item h3 {
+    margin-bottom: 10px;
+}
+
+/* Footer styling */
+footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+}
+
+footer p {
+    font-size: 0.9rem;
+}
+
+.tail{
+    font-size: 1.2vmin;
+}
+
+/* Media queries for responsiveness */
+@media screen and (max-width: 768px) {
+    nav ul {
+        text-align: center;
+    }
+
+    nav ul li {
+        display: block;
+        margin: 10px 0;
+    }
+
+    .service-item {
+        padding: 10px;
+    }
+
+    .container {
+        width: 100%;
+        padding: 0 10px;
+    }
+}

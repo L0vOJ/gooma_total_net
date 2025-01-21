@@ -12,6 +12,7 @@
     "@keystone-6/core": "^6.0.0",
     "@keystone-6/fields-document": "^9.0.0",
     "axios": "^1.7.9",
+    "node-mcstatus": "^1.2.1",
     "slate-dom": "^0.111.0",
     "typescript": "^5.7.3"
   }

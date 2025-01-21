@@ -17,6 +17,7 @@ import { withAuth, session } from './auth'
 
 import path from 'path';
 import express from 'express';
+import { statusJava } from 'node-mcstatus';
 
 export default withAuth(
   config({
@@ -38,19 +39,30 @@ export default withAuth(
         // React 정적 파일 경로 설정
         // console.log(`NODE_ENV: "${process.env.NODE_ENV}"`);
         // console.log(`Comparison: ${process.env.NODE_ENV === 'production'}`);
+        const options = { timeout: 1000 * 1, query: true };
+        app.get('/mcs', (req, res) => {
+          statusJava("netgooma.ddns.net", 25565, options)
+            .then((result) => {
+              res.json(result);
+            })
+            .catch((error) => {
+              console.log("reviece fail");
+            });
+        });
+        app.use('/public', express.static("public"));
         if (process.env.NODE_ENV === 'production') {
           // console.log(process.env.NODE_ENV);
           const reactBuildPath = path.join(__dirname, 'build');
           app.use('/page', express.static(reactBuildPath));
           // 모든 비정적 요청을 React의 index.html로 리디렉션
-          app.get('/page/*', (req, res) => {
+          app.get('/page', (req, res) => {
             res.sendFile(path.join(reactBuildPath, 'index.html'));
             // res.send('Operate in Production Mode');
           });
         } 
         else {
           // 개발 환경에서는 React 앱의 핫 리로딩을 위해 다른 처리를 할 수 있습니다.
-          app.get('/page/*', (req, res) => {
+          app.get('/page', (req, res) => {
             res.send('Operate in Development Mode');
             // console.log(process.env.NODE_ENV);
           });
