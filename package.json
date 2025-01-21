@@ -10,8 +10,12 @@
     "build:all": "yarn workspaces run build",
     "build:react":"cd ./packages/reacter && yarn build",
     "copy:build":"cp -r ./packages/reacter/build ./packages/gate/.keystone/",
+    "dev:legacy": "yarn workspaces run dev",
+    
     "build":"yarn build:all && yarn copy:build", 
     "start":"cd ./packages/gate && yarn start",
-    "dev": "yarn workspaces run dev"
+    "operate":"cd ./packages/gate && pm2 start ecosystem.config.js",
+    "dev1": "cd ./packages/gate && yarn dev",
+    "dev2": "cd ./packages/reacter && yarn dev"
   }
 }
