@@ -5,15 +5,18 @@
   "scripts": {
     "dev": "keystone dev",
     "start": "NODE_ENV=production keystone start",
-    "build": "keystone build"
+    "build": "keystone build",
+    "admin-gen": "cd ./bin && tsx admin-gen.ts"
   },
   "dependencies": {
     "@keystone-6/auth": "^8.0.0",
     "@keystone-6/core": "^6.0.0",
     "@keystone-6/fields-document": "^9.0.0",
+    "@prisma/client": "^6.2.1",
     "axios": "^1.7.9",
     "node-mcstatus": "^1.2.1",
     "slate-dom": "^0.111.0",
+    "tsx": "^4.19.2",
     "typescript": "^5.7.3"
   }
 }

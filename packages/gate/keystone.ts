@@ -9,7 +9,7 @@ import { config } from '@keystone-6/core'
 
 
 // to keep this file tidy, we define our schema in a different file
-import { lists } from './schema'
+import { type Session, lists } from './schema'
 
 // authentication is configured separately here too, but you might move this elsewhere
 // when you write your list-level access control functions, as they typically rely on session data
@@ -18,8 +18,9 @@ import { withAuth, session } from './auth'
 import path from 'path';
 import express from 'express';
 import { statusJava } from 'node-mcstatus';
+import { type TypeInfo } from '.keystone/types'
 
-export default withAuth(
+export default withAuth<TypeInfo<Session>>(
   config({
     db: {
       // we're using sqlite for the fastest startup experience
@@ -27,6 +28,7 @@ export default withAuth(
       //   see https://keystonejs.com/docs/guides/choosing-a-database#title
       provider: 'sqlite',
       url: 'file:./keystone.db',
+      prismaClientPath: 'node_modules/myprisma',
     },
     lists,
     session,
