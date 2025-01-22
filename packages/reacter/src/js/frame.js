@@ -81,15 +81,16 @@ function NotFound()
 
 export function Entrance({message, status})
 {
+  //basename="/page": React 라우터가 /page를 기준으로 동작하도록 설정.
 	return (
     <body>
-      <BrowserRouter>
+      <BrowserRouter basename="/page">
         <Header />
         <Routes>
-          <Route path="/page" element={<Main message={message} status={status}/>}></Route>
-          <Route path="/page/product" element={<Product />}></Route>
+          <Route path="/" element={<Main message={message} status={status}/>}></Route>
+          <Route path="/product/*" element={<Product />}></Route>
           {/* 상단에 위치하는 라우트들의 규칙을 모두 확인, 일치하는 라우트가 없는경우 처리 */}
-          {/* <Route path="*" element={<NotFound />}></Route> */}
+          <Route path="*" element={<NotFound />}></Route>
         </Routes>
         <TailEnd />
       </BrowserRouter>

@@ -55,7 +55,7 @@ export default withAuth(
           const reactBuildPath = path.join(__dirname, 'build');
           app.use('/page', express.static(reactBuildPath));
           // 모든 비정적 요청을 React의 index.html로 리디렉션
-          app.get('/page', (req, res) => {
+          app.get('/page/*', (req, res) => {
             res.sendFile(path.join(reactBuildPath, 'index.html'));
             // res.send('Operate in Production Mode');
           });
