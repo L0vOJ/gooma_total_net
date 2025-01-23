@@ -19,6 +19,7 @@ type UserProps = {
 
 export async function main () {
   const context = getContext(config, PrismaModule)
+  const sudoContext = context.sudo();
 
   console.log(`🌱 Inserting seed data`)
   const createUser = async (UserData: UserProps) => {
@@ -29,7 +30,7 @@ export async function main () {
     
     if (!user) {
       console.log(`👩 Adding user: ${UserData.name}`)
-      user = await context.query.User.createOne({
+      user = await sudoContext.query.User.createOne({
         data: UserData,
         query: 'id createdAt',
       })

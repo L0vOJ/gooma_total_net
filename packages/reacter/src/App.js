@@ -53,7 +53,7 @@ function App() {
   const [status, setstatus] = useState(false);
   useEffect(() => {
     // Express 서버의 API를 호출
-    axios.get('/mcs')
+    axios.get('/api/mcs')
       .then(response => {
         setstatus(true);
         setMessage(response.data);
