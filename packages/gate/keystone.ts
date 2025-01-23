@@ -35,8 +35,8 @@ function restrictAccess(context: Context) {
       // 세션 데이터 가져오기
       const session = keystoneContext.session?.data ?? false;
 
-      console.log(session)
-      console.log("req.path: ", req.path)
+      // console.log(session)
+      // console.log("req.path: ", req.path)
 
       // 필요할 때 활성화 하길
       // const isDenied = deniedPaths.some((path) => {
