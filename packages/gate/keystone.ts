@@ -128,9 +128,11 @@ export default withAuth<TypeInfo<Session>>(
         backApp.use('/public', express.static("public"));
         const frontApp = express();
         const options = { timeout: 1000 * 1, query: true };
+        frontApp.use(express.static(__dirname + '../cert'));
         frontApp.use('/public', express.static("public"));
         frontApp.get('/api/mcs', (req, res) => {
-          statusJava("netgooma.ddns.net", 25565, options)
+          // statusJava("netgooma.ddns.net", 25565, options)
+          statusJava("127.0.0.1", 25565, options)
           .then((result) => {
             res.json(result);
           })
@@ -162,7 +164,13 @@ export default withAuth<TypeInfo<Session>>(
           key: fs.readFileSync('/etc/letsencrypt/live/netgooma.ddns.net/privkey.pem'),
           cert: fs.readFileSync('/etc/letsencrypt/live/netgooma.ddns.net/cert.pem')
         };
-        https.createServer(cert_options, frontApp).listen(3011);
+        const cert_options_temp = {
+          ca: fs.readFileSync('/etc/letsencrypt/live/netgoomatemp.ddns.net/fullchain.pem'),
+          key: fs.readFileSync('/etc/letsencrypt/live/netgoomatemp.ddns.net/privkey.pem'),
+          cert: fs.readFileSync('/etc/letsencrypt/live/netgoomatemp.ddns.net/cert.pem')
+        };
+        // https.createServer(cert_options, frontApp).listen(3011);
+        https.createServer(cert_options_temp, frontApp).listen(3011);
       },
     },
   })
