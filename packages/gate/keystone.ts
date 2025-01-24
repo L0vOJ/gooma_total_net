@@ -132,7 +132,7 @@ export default withAuth<TypeInfo<Session>>(
         frontApp.use('/public', express.static("public"));
         frontApp.get('/api/mcs', (req, res) => {
           // statusJava("netgooma.ddns.net", 25565, options)
-          statusJava("127.0.0.1", 25565, options)
+          statusJava("netgoomatemp.ddns.net", 25565, options)
           .then((result) => {
             res.json(result);
           })
