@@ -23,6 +23,17 @@ import fs from "fs"
 import http from "http"
 import https from "https"
 
+function CertOptions() {
+  const cert_path = "/etc/letsencrypt/live/";
+  const host_name = process.env.DNS_HOST ?? "netgooma.ddns.net";
+  const CertOptions = {
+    ca: fs.readFileSync(cert_path + host_name +'/fullchain.pem'),
+    key: fs.readFileSync(cert_path + host_name +'/privkey.pem'),
+    cert: fs.readFileSync(cert_path + host_name +'/cert.pem')
+  };
+  return CertOptions
+}
+
 function restrictAccess(context: Context) {
   // const allowedPaths = ['/_next/static/*','/api/*', '/signin', '/page', '/page/*']; ///_next/static/chunks/pages/no-access.js
   const allowedPaths = ['/page', '/page/*']; ///_next/static/chunks/pages/no-access.js
@@ -127,12 +138,12 @@ export default withAuth<TypeInfo<Session>>(
       extendExpressApp: (backApp, context) => {
         backApp.use('/public', express.static("public"));
         const frontApp = express();
-        const options = { timeout: 1000 * 1, query: true };
         frontApp.use(express.static(__dirname + '../cert'));
         frontApp.use('/public', express.static("public"));
         frontApp.get('/api/mcs', (req, res) => {
+          const options = { timeout: 1000 * 1, query: true };
           // statusJava("netgooma.ddns.net", 25565, options)
-          statusJava("netgoomatemp.ddns.net", 25565, options)
+          statusJava("192.168.122.43", 25565, options)    //test ipv4
           .then((result) => {
             res.json(result);
           })
@@ -159,18 +170,7 @@ export default withAuth<TypeInfo<Session>>(
         }
         frontApp.use(restrictAccess(context));
         http.createServer(frontApp).listen(3001);
-        const cert_options = {
-          ca: fs.readFileSync('/etc/letsencrypt/live/netgooma.ddns.net/fullchain.pem'),
-          key: fs.readFileSync('/etc/letsencrypt/live/netgooma.ddns.net/privkey.pem'),
-          cert: fs.readFileSync('/etc/letsencrypt/live/netgooma.ddns.net/cert.pem')
-        };
-        const cert_options_temp = {
-          ca: fs.readFileSync('/etc/letsencrypt/live/netgoomatemp.ddns.net/fullchain.pem'),
-          key: fs.readFileSync('/etc/letsencrypt/live/netgoomatemp.ddns.net/privkey.pem'),
-          cert: fs.readFileSync('/etc/letsencrypt/live/netgoomatemp.ddns.net/cert.pem')
-        };
-        // https.createServer(cert_options, frontApp).listen(3011);
-        https.createServer(cert_options_temp, frontApp).listen(3011);
+        https.createServer(CertOptions(), frontApp).listen(3011);
       },
     },
   })

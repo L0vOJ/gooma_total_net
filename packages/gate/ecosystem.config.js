@@ -14,7 +14,9 @@ module.exports = {
       env: { // 환경 변수
         // TOKEN: 'token',
         //PASSWORD: 'password'
-      	"NODE_ENV": "production"
+      	"NODE_ENV": "production",
+        "DNS_HOST": "netgooma.ddns.net",
+        // "DNS_HOST": "netgoomatemp.ddns.net",
       }
     },
   ],
