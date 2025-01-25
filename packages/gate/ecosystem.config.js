@@ -16,7 +16,6 @@ module.exports = {
         //PASSWORD: 'password'
       	"NODE_ENV": "production",
         "DNS_HOST": "netgooma.ddns.net",
-        // "DNS_HOST": "netgoomatemp.ddns.net",
       }
     },
   ],

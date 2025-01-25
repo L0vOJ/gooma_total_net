@@ -23,17 +23,6 @@ import fs from "fs"
 import http from "http"
 import https from "https"
 
-function CertOptions() {
-  const cert_path = "/etc/letsencrypt/live/";
-  const host_name = process.env.DNS_HOST ?? "netgooma.ddns.net";
-  const CertOptions = {
-    ca: fs.readFileSync(cert_path + host_name +'/fullchain.pem'),
-    key: fs.readFileSync(cert_path + host_name +'/privkey.pem'),
-    cert: fs.readFileSync(cert_path + host_name +'/cert.pem')
-  };
-  return CertOptions
-}
-
 function restrictAccess(context: Context) {
   // const allowedPaths = ['/_next/static/*','/api/*', '/signin', '/page', '/page/*']; ///_next/static/chunks/pages/no-access.js
   const allowedPaths = ['/page', '/page/*']; ///_next/static/chunks/pages/no-access.js
@@ -41,10 +30,10 @@ function restrictAccess(context: Context) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       // 요청마다 새로운 Keystone Context 생성
-      const keystoneContext = await context.withRequest(req, res);
+      // const keystoneContext = await context.withRequest(req, res);
 
       // 세션 데이터 가져오기
-      const session = keystoneContext.session?.data ?? false;
+      // const session = keystoneContext.session?.data ?? false;
 
       // console.log(session)
       // console.log("req.path: ", req.path)
@@ -169,8 +158,16 @@ export default withAuth<TypeInfo<Session>>(
           });
         }
         frontApp.use(restrictAccess(context));
+
+        const cert_path = "/etc/letsencrypt/live/";
+        const host_name = process.env.DNS_HOST ?? "netgooma.ddns.net";
+        const cert_options = {
+          ca: fs.readFileSync(cert_path + host_name +'/fullchain.pem'),
+          key: fs.readFileSync(cert_path + host_name +'/privkey.pem'),
+          cert: fs.readFileSync(cert_path + host_name +'/cert.pem')
+        };
         http.createServer(frontApp).listen(3001);
-        https.createServer(CertOptions(), frontApp).listen(3011);
+        https.createServer(cert_options, frontApp).listen(3011);
       },
     },
   })
