@@ -23,9 +23,8 @@ import fs from "fs"
 import http from "http"
 import https from "https"
 
-function CertOptions() {
+function CertOptions(host_name: String) {
   const cert_path = "/etc/letsencrypt/live/";
-  const host_name = process.env.DNS_HOST ?? "netgooma.ddns.net";
   const cert_options = {
     ca: fs.readFileSync(cert_path + host_name +'/fullchain.pem'),
     key: fs.readFileSync(cert_path + host_name +'/privkey.pem'),
@@ -40,6 +39,7 @@ function restrictAccess(context: Context) {
   // const deniedPaths = ['/_next/static/chunks/pages/no-access.js']; 
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
+      // 로그인 구현 후 활성화 바람
       // 요청마다 새로운 Keystone Context 생성
       // const keystoneContext = await context.withRequest(req, res);
 
@@ -104,22 +104,13 @@ export default withAuth<TypeInfo<Session>>(
       prismaClientPath: 'node_modules/myprisma',
     },
     ui: {
-      // publicPages: [
-      //   '/api/*',
-      //   // '/signin',
-      //   '/_next/static/*',
-      //   '/page',
-      //   '/page/*',
-      // ],
+      // publicPages: [],
       isAccessAllowed: ({ session }) => {
         // console.log("Login==session: ",session)
         return session?.data.isAdmin ?? false
       },
       // adding page middleware ensures that users are redirected to the signin page if they are not signed in.
       // pageMiddleware: async ({ wasAccessAllowed }) => { 
-      //   console.log("wasAccessAllowedddddddddddddddddddddddddddddd: ", wasAccessAllowed)
-      //   //wasAccessAllowed can be replace to context 
-      //   //그러니 좀 더 다듬어
       //   if (wasAccessAllowed) return
       //   return {
       //     kind: 'redirect',
@@ -138,12 +129,12 @@ export default withAuth<TypeInfo<Session>>(
       extendExpressApp: (backApp, context) => {
         backApp.use('/public', express.static("public"));
         const frontApp = express();
+        const options = { timeout: 1000 * 1, query: true };
+        const host_name = process.env.DNS_HOST ?? "netgooma.ddns.net";
         frontApp.use(express.static(__dirname + '../cert'));
         frontApp.use('/public', express.static("public"));
         frontApp.get('/api/mcs', (req, res) => {
-          const options = { timeout: 1000 * 1, query: true };
-          // statusJava("netgooma.ddns.net", 25565, options)
-          statusJava("192.168.122.43", 25565, options)    //test ipv4
+          statusJava(host_name, 25565, options)
           .then((result) => {
             res.json(result);
           })
@@ -168,9 +159,9 @@ export default withAuth<TypeInfo<Session>>(
             // console.log(process.env.NODE_ENV);
           });
         }
-        frontApp.use(restrictAccess(context));
+        frontApp.use(restrictAccess(context)); //뒤로 빼놔야 막아진다
         http.createServer(frontApp).listen(3001);
-        https.createServer(CertOptions(), frontApp).listen(3011);
+        https.createServer(CertOptions(host_name), frontApp).listen(3011);
       },
     },
   })
