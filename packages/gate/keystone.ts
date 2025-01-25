@@ -23,6 +23,17 @@ import fs from "fs"
 import http from "http"
 import https from "https"
 
+function CertOptions() {
+  const cert_path = "/etc/letsencrypt/live/";
+  const host_name = process.env.DNS_HOST ?? "netgooma.ddns.net";
+  const cert_options = {
+    ca: fs.readFileSync(cert_path + host_name +'/fullchain.pem'),
+    key: fs.readFileSync(cert_path + host_name +'/privkey.pem'),
+    cert: fs.readFileSync(cert_path + host_name +'/cert.pem')
+  }
+  return cert_options;
+}
+
 function restrictAccess(context: Context) {
   // const allowedPaths = ['/_next/static/*','/api/*', '/signin', '/page', '/page/*']; ///_next/static/chunks/pages/no-access.js
   const allowedPaths = ['/page', '/page/*']; ///_next/static/chunks/pages/no-access.js
@@ -158,16 +169,8 @@ export default withAuth<TypeInfo<Session>>(
           });
         }
         frontApp.use(restrictAccess(context));
-
-        const cert_path = "/etc/letsencrypt/live/";
-        const host_name = process.env.DNS_HOST ?? "netgooma.ddns.net";
-        const cert_options = {
-          ca: fs.readFileSync(cert_path + host_name +'/fullchain.pem'),
-          key: fs.readFileSync(cert_path + host_name +'/privkey.pem'),
-          cert: fs.readFileSync(cert_path + host_name +'/cert.pem')
-        };
         http.createServer(frontApp).listen(3001);
-        https.createServer(cert_options, frontApp).listen(3011);
+        https.createServer(CertOptions(), frontApp).listen(3011);
       },
     },
   })
