@@ -15,7 +15,7 @@ import { type Session, lists } from './schema'
 import { withAuth, session } from './auth'
 
 import path from 'path';
-import express, { Request, Response, NextFunction } from 'express';
+import express, { Request, Response, NextFunction, type Express } from 'express';
 import { statusJava } from 'node-mcstatus';
 import { type TypeInfo, type Context } from '.keystone/types'
 
@@ -23,14 +23,15 @@ import fs from "fs"
 import http from "http"
 import https from "https"
 
-function CertOptions(host_name: String) {
+function HttpsOpen(host_name: String, frontApp: Express, port: number) {
   const cert_path = "/etc/letsencrypt/live/";
+  if(!fs.existsSync(cert_path + host_name +'/fullchain.pem')) return
   const cert_options = {
     ca: fs.readFileSync(cert_path + host_name +'/fullchain.pem'),
     key: fs.readFileSync(cert_path + host_name +'/privkey.pem'),
     cert: fs.readFileSync(cert_path + host_name +'/cert.pem')
   }
-  return cert_options;
+  https.createServer(cert_options, frontApp).listen(port);
 }
 
 function restrictAccess(context: Context) {
@@ -161,7 +162,7 @@ export default withAuth<TypeInfo<Session>>(
         }
         frontApp.use(restrictAccess(context)); //뒤로 빼놔야 막아진다
         http.createServer(frontApp).listen(3001);
-        https.createServer(CertOptions(host_name), frontApp).listen(3011);
+        HttpsOpen(host_name, frontApp, 3011);
       },
     },
   })
