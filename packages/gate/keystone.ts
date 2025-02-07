@@ -12,12 +12,12 @@ import { type Session, lists } from './schema'
 
 // authentication is configured separately here too, but you might move this elsewhere
 // when you write your list-level access control functions, as they typically rely on session data
-import { withAuth, session } from './auth'
+import { withAuth, session, DBConfig } from './auth'
 
 import path from 'path';
 import express, { Request, Response, NextFunction, type Express } from 'express';
 import { statusJava } from 'node-mcstatus';
-import { type TypeInfo, type Context } from '.keystone/types'
+import { type TypeInfo, type Context, type Config } from '.keystone/types'
 
 import fs from "fs"
 import http from "http"
@@ -33,6 +33,7 @@ function HttpsOpen(host_name: String, frontApp: Express, port: number) {
   }
   https.createServer(cert_options, frontApp).listen(port);
 }
+
 
 function restrictAccess(context: Context) {
   // const allowedPaths = ['/_next/static/*','/api/*', '/signin', '/page', '/page/*']; ///_next/static/chunks/pages/no-access.js
@@ -96,14 +97,12 @@ function restrictAccess(context: Context) {
 
 export default withAuth<TypeInfo<Session>>(
   config({
-    db: {
-      // we're using sqlite for the fastest startup experience
-      //   for more information on what database might be appropriate for you
-      //   see https://keystonejs.com/docs/guides/choosing-a-database#title
-      provider: 'sqlite',
-      url: 'file:./keystone.db',
-      prismaClientPath: 'node_modules/myprisma',
-    },
+    db: DBConfig,
+    // db:{
+    //   provider: 'mysql',
+    //   url: 'mysql://masic:1q2w3e4R!@' + "127.0.0.1" + '/keystone',
+    //   prismaClientPath: 'node_modules/myprisma',
+    // },
     ui: {
       // publicPages: [],
       isAccessAllowed: ({ session }) => {
@@ -165,5 +164,5 @@ export default withAuth<TypeInfo<Session>>(
         HttpsOpen(host_name, frontApp, 3011);
       },
     },
-  })
-)
+  }) satisfies Config
+) 

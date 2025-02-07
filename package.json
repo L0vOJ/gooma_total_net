@@ -14,6 +14,7 @@
     
     "build":"yarn build:all && yarn copy:build", 
     "start":"cd ./packages/gate && yarn start",
+    "start:sqlite":"cd ./packages/gate && yarn start:sqlite",
     "operate":"cd ./packages/gate && pm2 start ecosystem.config.js",
     "dev1": "cd ./packages/gate && yarn dev",
     "dev2": "cd ./packages/reacter && yarn dev"

@@ -4,8 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "keystone dev",
-    "start": "NODE_ENV=production keystone start",
-    "build": "keystone build",
+    "start": "NODE_ENV=production GATE_DB=mysql keystone start",
+    "start:sqlite": "NODE_ENV=production GATE_DB=sqlite keystone start",
+    "build": "GATE_DB=mysql keystone build",
+    "build:sqlite": "GATE_DB=sqlite keystone build",
     "admin-gen": "cd ./bin && tsx admin-gen.ts"
   },
   "dependencies": {

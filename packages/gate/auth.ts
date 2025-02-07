@@ -21,6 +21,8 @@ import { createAuth } from '@keystone-6/auth'
 // see https://keystonejs.com/docs/apis/session for the session docs
 import { statelessSessions } from '@keystone-6/core/session'
 
+import { type Config } from '.keystone/types'
+
 // withAuth is a function we can use to wrap our base configuration
 const { withAuth } = createAuth({
   listKey: 'User',
@@ -56,4 +58,22 @@ const session = statelessSessions({
   secret: process.env.SESSION_SECRET,
 })
 
-export { withAuth, session }
+export function DBCheck(): Config['db'] {
+  const path_ip = process.env.USER == 'masic' ? "192.168.122.72" : "127.0.0.1";
+  const mysql_output = {
+    provider: 'mysql',
+    url: 'mysql://masic:1q2w3e4R!@' + path_ip + '/keystone',
+    prismaClientPath: 'node_modules/myprisma',
+  } satisfies Config["db"]
+  const sqlite_output = {
+    provider: 'sqlite',
+    url: 'file:./keystone.db',
+    prismaClientPath: 'node_modules/myprisma',
+  } satisfies Config["db"]
+  // process.env.GATE_DB == 'mysql' ? console.log("mysql_output: ", mysql_output) : console.log("sqlite_output: ", sqlite_output);
+  return process.env.GATE_DB == 'mysql' ? mysql_output : sqlite_output;
+}
+
+const DBConfig = DBCheck();
+
+export { withAuth, session, DBConfig }
