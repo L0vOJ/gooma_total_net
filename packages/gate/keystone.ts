@@ -123,7 +123,7 @@ export default withAuth<TypeInfo<Session>>(
     session,
     server: {
       cors: {
-        origin: ['http://localhost:3001', 'https://localhost:3011', 'https://localhost:3111', 'https://netgooma.ddns.net'], // React 앱 주소
+        origin: ['http://localhost:3001', 'https://localhost:3011', 'https://netgooma.ddns.net'], // React 앱 주소
         // port: 3011,
         credentials: true,
       },
@@ -147,6 +147,13 @@ export default withAuth<TypeInfo<Session>>(
           // pathRewrite: {
           //   '^/map': '',  // 요청 경로에서 /map 접두사를 제거하고 target으로 전달
           // },
+        }));
+        frontApp.use('/api/graphql', createProxyMiddleware({
+          target: 'http://localhost:3000', // Keystone Admin UI가 실행 중인 서버 주소
+          changeOrigin: true,
+          secure: false, // HTTPS 클라이언트에서 HTTP 타겟으로 요청 시, 인증서 검증을 건너뛰려면 false로 설정합니다.
+          // 필요에 따라 pathRewrite 옵션을 추가할 수 있습니다.
+          // pathRewrite: { '^/api/graphql': '/api/graphql' },
         }));
         frontApp.get('/api/mcs', (req, res) => {
           statusJava(host_name, 25565, options)
@@ -177,19 +184,6 @@ export default withAuth<TypeInfo<Session>>(
         frontApp.use(restrictAccess(context)); //뒤로 빼놔야 막아진다
         http.createServer(frontApp).listen(3001);
         HttpsOpen(host_name, frontApp, 3011);
-
-        const corsProxyApp = express();
-        corsProxyApp.use(
-          '/api/graphql',
-          createProxyMiddleware({
-            target: 'http://localhost:3000', // Keystone Admin UI가 실행 중인 서버 주소
-            changeOrigin: true,
-            secure: false, // HTTPS 클라이언트에서 HTTP 타겟으로 요청 시, 인증서 검증을 건너뛰려면 false로 설정합니다.
-            // 필요에 따라 pathRewrite 옵션을 추가할 수 있습니다.
-            // pathRewrite: { '^/api/graphql': '/api/graphql' },
-          })
-        );
-        HttpsOpen(host_name, corsProxyApp, 3111);
       },
     },
   }) satisfies Config
