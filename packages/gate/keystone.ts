@@ -123,8 +123,8 @@ export default withAuth<TypeInfo<Session>>(
     session,
     server: {
       cors: {
-        origin: ['http://localhost:3001'], // React 앱 주소
-        port: 3001,
+        origin: ['http://localhost:3001', 'http://localhost:3011'], // React 앱 주소
+        // port: 3001,
         credentials: true,
       },
       extendExpressApp: (backApp, context) => {
