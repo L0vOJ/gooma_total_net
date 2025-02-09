@@ -155,7 +155,7 @@ export default withAuth<TypeInfo<Session>>(
           // 필요에 따라 pathRewrite 옵션을 추가할 수 있습니다.
           // pathRewrite: { '^/api/graphql': '/api/graphql' },
         }));
-        frontApp.get('/api/mcs', (req, res) => {
+        frontApp.use('/api/mcs', (req, res) => {
           statusJava(host_name, 25565, options)
           .then((result) => {
             res.json(result);
