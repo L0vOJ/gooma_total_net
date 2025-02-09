@@ -106,10 +106,10 @@ export default withAuth<TypeInfo<Session>>(
     // },
     ui: {
       // publicPages: [],
-      isAccessAllowed: ({ session }) => {
-        // console.log("Login==session: ",session)
-        return session?.data.isAdmin ?? false
-      },
+      // isAccessAllowed: ({ session }) => {
+      //   // console.log("Login==session: ",session)
+      //   return session?.data.isAdmin ?? false
+      // },
       // adding page middleware ensures that users are redirected to the signin page if they are not signed in.
       // pageMiddleware: async ({ wasAccessAllowed }) => { 
       //   if (wasAccessAllowed) return
