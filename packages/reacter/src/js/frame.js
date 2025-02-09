@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import '../css/frame.css';
 // import '../css/list_box.css';
 import title from '../images/title.png';
+import LoginPage from './login.js';
 import { gql, useQuery } from '@apollo/client';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 
 const GET_POSTS = gql`
   query {
@@ -15,12 +16,66 @@ const GET_POSTS = gql`
   }
 `;
 
+const GET_USERS = gql`
+  query {
+    authenticatedItem {
+      ... on User {
+        id
+        name
+        email
+      }
+    }
+  }
+`;
+        
 function Header()
 {
   return (
     <img src={title} className="title-logo" alt="logo" />
   );
 }
+
+function AuthenticatedUser() {
+  const { loading, error, data } = useQuery(GET_USERS);
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
+  
+  const user = data.authenticatedItem;
+  const Notch_uuid = "069a79f4-44e9-4726-a5be-fca90e38aaf5" //tmp apply -- userdata uuid add soon
+  
+  const HeadDisplay = (uuid, size) => (
+    "https://minotar.net/avatar/" + uuid + "/" + size
+  );
+
+  // 로그인된 사용자가 없으면 null이 반환될 수 있음
+  if (!data || !data.authenticatedItem) {
+    return (
+      <main>
+        <div className="container" style={{ "text-align": "center" }}>
+          <Link to='/signin'>
+            <button type="button" style={{ padding: '0.5rem 25%'}}>
+              login
+            </button>
+          </Link>
+        </div>
+      </main>
+    );
+  }
+  
+  return (
+    <div class="service-item" style={{ width: "50vw" }}>
+      <table class="text_default" height="100%">
+        <tr key={user.id}>
+          <td width="10%">
+            <img class="head-logo" src={HeadDisplay(Notch_uuid, 100)} />
+          </td>
+          <td width="28%">User: {user.name ? user.name : user.email}</td>
+        </tr>
+      </table>
+    </div>
+  );
+}
+
 
 function TailEnd()
 {
@@ -74,7 +129,7 @@ function NotFound()
 {
   return (
     <div class="container">
-      <p class="tail">404 not found</p>
+      <h2 class="tail">404 not found</h2>
     </div>
   );
 }
@@ -86,9 +141,11 @@ export function Entrance({message, status})
     <body>
       <BrowserRouter basename="/main">
         <Header />
+        <AuthenticatedUser />
         <Routes>
           <Route path="/" element={<Main message={message} status={status}/>}></Route>
           <Route path="/product/*" element={<Product />}></Route>
+          <Route path="/signin/*" element={<LoginPage />}></Route>
           {/* 상단에 위치하는 라우트들의 규칙을 모두 확인, 일치하는 라우트가 없는경우 처리 */}
           <Route path="*" element={<NotFound />}></Route>
         </Routes>
@@ -102,12 +159,18 @@ export function Entrance({message, status})
 
 function ServerStatus({message, status})
 {
+  const host_name = process.env.DNS_HOST ?? "netgooma.ddns.net";
+  const dynmap_link = 'https://' + host_name + "/map";
   return(
     <section class="intro">
       {
         status 
         ? message.online
-          ? <h2 class="text_default">현재 서버: {message.motd.clean} </h2> 
+          ? <h2 class="text_default">현재 서버:&ensp;
+              <Link to={dynmap_link}>
+                {message.motd.clean}  
+              </Link>
+            </h2>
           : <h2 class="text_default">현재 서버: 작동 중지 <br></br>-- 관리자에게 문의 바랍니다 --</h2> 
         : <h2 class="text_default">로딩 중... </h2>
       }
