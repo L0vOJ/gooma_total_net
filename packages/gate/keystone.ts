@@ -123,7 +123,7 @@ export default withAuth<TypeInfo<Session>>(
     session,
     server: {
       cors: {
-        origin: ['http://localhost:3001', 'http://localhost:3011', 'https://netgooma.ddns.net'], // React 앱 주소
+        origin: ['http://localhost:3001', 'https://localhost:3011', 'https://netgooma.ddns.net'], // React 앱 주소
         // port: 3001,
         credentials: true,
       },
