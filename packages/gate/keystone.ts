@@ -38,7 +38,7 @@ function HttpsOpen(host_name: String, frontApp: Express, port: number) {
 
 function restrictAccess(context: Context) {
   // const allowedPaths = ['/_next/static/*','/api/*', '/signin', '/main', '/main/*']; ///_next/static/chunks/pages/no-access.js
-  const allowedPaths = ['/main', '/main/*', '/map', '/map/*', '/api/*']; ///_next/static/chunks/pages/no-access.js
+  const allowedPaths = ['/main', '/main/*', '/map', '/map/*', '/api/*', '/api/graphql']; ///_next/static/chunks/pages/no-access.js
   // const deniedPaths = ['/_next/static/chunks/mains/no-access.js']; 
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
