@@ -181,7 +181,7 @@ export default withAuth<TypeInfo<Session>>(
             // console.log(process.env.NODE_ENV);
           });
         }
-        frontApp.use(restrictAccess(context)); //뒤로 빼놔야 막아진다
+        // frontApp.use(restrictAccess(context)); //뒤로 빼놔야 막아진다
         http.createServer(frontApp).listen(3001);
         HttpsOpen(host_name, frontApp, 3011);
       },
