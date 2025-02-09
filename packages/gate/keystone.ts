@@ -17,6 +17,7 @@ import { withAuth, session, DBConfig } from './auth'
 import path from 'path';
 import express, { Request, Response, NextFunction, type Express } from 'express';
 import { statusJava } from 'node-mcstatus';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 import { type TypeInfo, type Context, type Config } from '.keystone/types'
 
 import fs from "fs"
@@ -36,9 +37,9 @@ function HttpsOpen(host_name: String, frontApp: Express, port: number) {
 
 
 function restrictAccess(context: Context) {
-  // const allowedPaths = ['/_next/static/*','/api/*', '/signin', '/page', '/page/*']; ///_next/static/chunks/pages/no-access.js
-  const allowedPaths = ['/page', '/page/*']; ///_next/static/chunks/pages/no-access.js
-  // const deniedPaths = ['/_next/static/chunks/pages/no-access.js']; 
+  // const allowedPaths = ['/_next/static/*','/api/*', '/signin', '/main', '/main/*']; ///_next/static/chunks/pages/no-access.js
+  const allowedPaths = ['/main', '/main/*', '/map', '/map/*', '/api/*']; ///_next/static/chunks/pages/no-access.js
+  // const deniedPaths = ['/_next/static/chunks/mains/no-access.js']; 
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       // 로그인 구현 후 활성화 바람
@@ -60,7 +61,7 @@ function restrictAccess(context: Context) {
       // if(isDenied) 
       // {
       //   if(!session) return res.redirect('/signin');
-      //   else return res.redirect('/page');
+      //   else return res.redirect('/main');
       // }
 
       // 세션이 없거나 isAdmin이 false인 경우 접근 제한 //로그인 구현 후 활성화 바람
@@ -72,7 +73,7 @@ function restrictAccess(context: Context) {
 
       //   if (!isAllowed) {
       //     if(!session) return res.redirect('/signin');
-      //     else return res.redirect('/page');
+      //     else return res.redirect('/main');
       //     // return res.status(403).json({ error: 'Access Denied' });
       //   }
       // }
@@ -83,7 +84,7 @@ function restrictAccess(context: Context) {
       });
 
       if (!isAllowed) {
-        return res.redirect('/page');
+        return res.redirect('/main');
       }
 
       // 조건에 만족하면 다음 미들웨어로 이동
@@ -114,7 +115,7 @@ export default withAuth<TypeInfo<Session>>(
       //   if (wasAccessAllowed) return
       //   return {
       //     kind: 'redirect',
-      //     to: '/page',
+      //     to: '/main',
       //   }
       // },
     },
@@ -131,8 +132,22 @@ export default withAuth<TypeInfo<Session>>(
         const frontApp = express();
         const options = { timeout: 1000 * 1, query: true };
         const host_name = process.env.DNS_HOST ?? "netgooma.ddns.net";
+        const __dir_package = path.join(__dirname, '../../');
         frontApp.use(express.static(__dirname + '../cert'));
         frontApp.use('/public', express.static("public"));
+        frontApp.use('/map', express.static(__dir_package + "web_dynmap"));
+        // frontApp.get('/map/*', (req, res) => {
+        //   res.sendFile(path.join(__dir_package, 'web_dynmap/index.html'));
+        //   // res.send('Operate in Production Mode');
+        // });
+        frontApp.use('/map', createProxyMiddleware({
+          target: 'http://localhost:8123',
+          changeOrigin: true,
+          // ws: true, // 웹소켓 지원
+          // pathRewrite: {
+          //   '^/map': '',  // 요청 경로에서 /map 접두사를 제거하고 target으로 전달
+          // },
+        }));
         frontApp.get('/api/mcs', (req, res) => {
           statusJava(host_name, 25565, options)
           .then((result) => {
@@ -145,16 +160,16 @@ export default withAuth<TypeInfo<Session>>(
         if (process.env.NODE_ENV === 'production') {
           // console.log(process.env.NODE_ENV);
           const reactBuildPath = path.join(__dirname, 'build');
-          frontApp.use('/page', express.static(reactBuildPath));
+          frontApp.use('/main', express.static(reactBuildPath));
           // 모든 비정적 요청을 React의 index.html로 리디렉션
-          frontApp.get('/page/*', (req, res) => {
+          frontApp.get('/main/*', (req, res) => {
             res.sendFile(path.join(reactBuildPath, 'index.html'));
             // res.send('Operate in Production Mode');
           });
         } 
         else {
           // 개발 환경에서는 React 앱의 핫 리로딩을 위해 다른 처리를 할 수 있습니다.
-          frontApp.get('/page', (req, res) => {
+          frontApp.get('/main', (req, res) => {
             res.send('Operate in Development Mode');
             // console.log(process.env.NODE_ENV);
           });
