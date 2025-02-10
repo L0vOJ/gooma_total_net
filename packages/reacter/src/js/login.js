@@ -29,6 +29,9 @@ export default function LoginPage() {
   const [errorMsg, setErrorMsg] = useState('');
   const [authenticateUser, { loading }] = useMutation(AUTHENTICATE_USER_WITH_PASSWORD);
 
+  // function sleep(sec) {
+  //   return new Promise(resolve => setTimeout(resolve, sec * 1000));
+  // }
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMsg('');
@@ -39,7 +42,9 @@ export default function LoginPage() {
       const authResult = data.authenticateUserWithPassword;
       if (authResult.sessionToken) {
         // 로그인 성공: sessionToken이 존재하므로 세션 쿠키가 발급됨
-        navigate('/');
+        // await sleep(2)
+        //완료 팝업 추가 해야 함
+        navigate('/', {replace: true});
       } else if (authResult.message) {
         // 인증 실패 시 메시지 표시
         setErrorMsg(authResult.message);

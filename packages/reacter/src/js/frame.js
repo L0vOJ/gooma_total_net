@@ -63,7 +63,7 @@ function AuthenticatedUser() {
   }
   
   return (
-    <div class="service-item" style={{ width: "50vw" }}>
+    <div class="service-item" style={{ width: "50vmin" }}>
       <table class="text_default" height="100%">
         <tr key={user.id}>
           <td width="10%">
@@ -159,8 +159,8 @@ export function Entrance({message, status})
 
 function ServerStatus({message, status})
 {
-  const host_name = process.env.DNS_HOST ?? "netgooma.ddns.net";
-  const dynmap_link = 'https://' + host_name + "/map";
+  const url = process.env.REACT_APP_URL ?? "https://netgooma.ddns.net";
+  const dynmap_link = url + "/map";
   return(
     <section class="intro">
       {

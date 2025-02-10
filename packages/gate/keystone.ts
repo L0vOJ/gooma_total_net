@@ -38,7 +38,7 @@ function HttpsOpen(host_name: String, frontApp: Express, port: number) {
 
 function restrictAccess(context: Context) {
   // const allowedPaths = ['/_next/static/*','/api/*', '/signin', '/main', '/main/*']; ///_next/static/chunks/pages/no-access.js
-  const allowedPaths = ['/main', '/main/*', '/map', '/map/*', '/api/*', '/api/graphql']; ///_next/static/chunks/pages/no-access.js
+  const allowedPaths = ['/main', '/main/*', '/map', '/map/*', '/api/*']; ///_next/static/chunks/pages/no-access.js
   // const deniedPaths = ['/_next/static/chunks/mains/no-access.js']; 
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -181,7 +181,7 @@ export default withAuth<TypeInfo<Session>>(
             // console.log(process.env.NODE_ENV);
           });
         }
-        // frontApp.use(restrictAccess(context)); //뒤로 빼놔야 막아진다
+        frontApp.use(restrictAccess(context)); //뒤로 빼놔야 막아진다
         http.createServer(frontApp).listen(3001);
         HttpsOpen(host_name, frontApp, 3011);
       },
