@@ -159,7 +159,7 @@ export function Entrance({message, status})
 
 function ServerStatus({message, status})
 {
-  const url = process.env.REACT_APP_URL ?? "https://netgooma.ddns.net";
+  const url = "https://netgooma.ddns.net";
   const dynmap_link = url + "/map";
   return(
     <section class="intro">
