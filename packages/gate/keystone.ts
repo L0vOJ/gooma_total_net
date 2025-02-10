@@ -149,7 +149,7 @@ export default withAuth<TypeInfo<Session>>(
           // },
         }));
         frontApp.use('/api/graphql', createProxyMiddleware({
-          target: 'http://localhost:3000', // Keystone Admin UI가 실행 중인 서버 주소
+          target: 'http://localhost:3000/api/graphql', // Keystone Admin UI가 실행 중인 서버 주소
           changeOrigin: true,
           secure: false, // HTTPS 클라이언트에서 HTTP 타겟으로 요청 시, 인증서 검증을 건너뛰려면 false로 설정합니다.
           // 필요에 따라 pathRewrite 옵션을 추가할 수 있습니다.
