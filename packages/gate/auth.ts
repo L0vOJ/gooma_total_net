@@ -27,12 +27,12 @@ import { type Config } from '.keystone/types'
 const { withAuth } = createAuth({
   listKey: 'User',
   identityField: 'email',
+  secretField: 'password',
 
   // this is a GraphQL query fragment for fetching what data will be attached to a context.session
   //   this can be helpful for when you are writing your access control functions
   //   you can find out more at https://keystonejs.com/docs/guides/auth-and-access-control
   sessionData: 'name createdAt isAdmin',
-  secretField: 'password',
 
   // WARNING: remove initFirstItem functionality in production
   //   see https://keystonejs.com/docs/config/auth#init-first-item for more

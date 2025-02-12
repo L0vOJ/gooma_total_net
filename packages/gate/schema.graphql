@@ -142,13 +142,57 @@ input PostRelateToManyForCreateInput {
   connect: [PostWhereUniqueInput!]
 }
 
-type Post {
+type TextPost {
   id: ID!
   title: String
   content: String
+}
+
+input TextPostWhereUniqueInput {
+  id: ID
+}
+
+input TextPostWhereInput {
+  AND: [TextPostWhereInput!]
+  OR: [TextPostWhereInput!]
+  NOT: [TextPostWhereInput!]
+  id: IDFilter
+  title: StringFilter
+  content: StringFilter
+}
+
+input TextPostOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+  content: OrderDirection
+}
+
+input TextPostUpdateInput {
+  title: String
+  content: String
+}
+
+input TextPostUpdateArgs {
+  where: TextPostWhereUniqueInput!
+  data: TextPostUpdateInput!
+}
+
+input TextPostCreateInput {
+  title: String
+  content: String
+}
+
+type Post {
+  id: ID!
+  title: String
+  content: Post_content_Document
   author: User
   tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
+}
+
+type Post_content_Document {
+  document(hydrateRelationships: Boolean! = false): JSON!
 }
 
 input PostWhereUniqueInput {
@@ -161,7 +205,6 @@ input PostWhereInput {
   NOT: [PostWhereInput!]
   id: IDFilter
   title: StringFilter
-  content: StringFilter
   author: UserWhereInput
   tags: TagManyRelationFilter
 }
@@ -175,12 +218,11 @@ input TagManyRelationFilter {
 input PostOrderByInput {
   id: OrderDirection
   title: OrderDirection
-  content: OrderDirection
 }
 
 input PostUpdateInput {
   title: String
-  content: String
+  content: JSON
   author: UserRelateToOneForUpdateInput
   tags: TagRelateToManyForUpdateInput
 }
@@ -205,7 +247,7 @@ input PostUpdateArgs {
 
 input PostCreateInput {
   title: String
-  content: String
+  content: JSON
   author: UserRelateToOneForCreateInput
   tags: TagRelateToManyForCreateInput
 }
@@ -272,6 +314,12 @@ type Mutation {
   updateUsers(data: [UserUpdateArgs!]!): [User]
   deleteUser(where: UserWhereUniqueInput!): User
   deleteUsers(where: [UserWhereUniqueInput!]!): [User]
+  createTextPost(data: TextPostCreateInput!): TextPost
+  createTextPosts(data: [TextPostCreateInput!]!): [TextPost]
+  updateTextPost(where: TextPostWhereUniqueInput!, data: TextPostUpdateInput!): TextPost
+  updateTextPosts(data: [TextPostUpdateArgs!]!): [TextPost]
+  deleteTextPost(where: TextPostWhereUniqueInput!): TextPost
+  deleteTextPosts(where: [TextPostWhereUniqueInput!]!): [TextPost]
   createPost(data: PostCreateInput!): Post
   createPosts(data: [PostCreateInput!]!): [Post]
   updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post
@@ -310,6 +358,9 @@ type Query {
   user(where: UserWhereUniqueInput!): User
   users(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UserWhereUniqueInput): [User!]
   usersCount(where: UserWhereInput! = {}): Int
+  textPost(where: TextPostWhereUniqueInput!): TextPost
+  textPosts(where: TextPostWhereInput! = {}, orderBy: [TextPostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TextPostWhereUniqueInput): [TextPost!]
+  textPostsCount(where: TextPostWhereInput! = {}): Int
   post(where: PostWhereUniqueInput!): Post
   posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   postsCount(where: PostWhereInput! = {}): Int

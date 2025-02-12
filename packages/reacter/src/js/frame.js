@@ -6,6 +6,16 @@ import LoginPage from './login.js';
 import { gql, useQuery } from '@apollo/client';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 
+const GET_TEXT_POSTS = gql`
+  query {
+    textPosts {
+      id
+      title
+      content
+    }
+  }
+`;
+
 const GET_POSTS = gql`
   query {
     posts {
@@ -103,20 +113,20 @@ function Main({message, status})
   );
 }
 
-function Product()
+function TextContent()
 {
-  const { loading, error, data } = useQuery(GET_POSTS);
+  const { loading, error, data } = useQuery(GET_TEXT_POSTS);
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
   return (
     <main>
       <div class="container">
-        <h2>Posts</h2>
+        <h2>텍스트 공지 내역:</h2>
         <ul>
-          {data.posts.map((post) => (
-            <li key={post.id}>
-              <h2>{post.title}</h2>
-              <p>{post.content}</p>
+          {data.textPosts.map((textPost) => (
+            <li key={textPost.id}>
+              <h2>{textPost.title}</h2>
+              <p>{textPost.content}</p>
             </li>
           ))}
         </ul>
@@ -144,7 +154,7 @@ export function Entrance({message, status})
         <AuthenticatedUser />
         <Routes>
           <Route path="/" element={<Main message={message} status={status}/>}></Route>
-          <Route path="/product/*" element={<Product />}></Route>
+          <Route path="/TextContent/*" element={<TextContent />}></Route>
           <Route path="/signin/*" element={<LoginPage />}></Route>
           {/* 상단에 위치하는 라우트들의 규칙을 모두 확인, 일치하는 라우트가 없는경우 처리 */}
           <Route path="*" element={<NotFound />}></Route>
@@ -206,7 +216,7 @@ function PlayerStatus({message, status})
 
 export function BaseFrame({message, status})
 {
-  const { loading, error, data } = useQuery(GET_POSTS);
+  const { loading, error, data } = useQuery(GET_TEXT_POSTS);
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
   return(
