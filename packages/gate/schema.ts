@@ -253,6 +253,30 @@ export const lists = {
       }),
     },
   }),
+
+  Announce: list({
+    //   you can find out more at https://keystonejs.com/docs/guides/auth-and-access-control
+    access: isAdmin,
+    fields: {
+      title: text({ validation: { isRequired: true } }),
+
+      // the document field can be used for making rich editable content
+      //   you can find out more at https://keystonejs.com/docs/guides/document-fields
+      content: document({
+        formatting: true,
+        layouts: [
+          [1, 1],
+          [1, 1, 1],
+          [2, 1],
+          [1, 2],
+          [1, 2, 1],
+        ],
+        links: true,
+        dividers: true,
+      }),
+    },
+  }),
+
   // this last list is our Tag list, it only has a name field for now
   Tag: list({
     //   you can find out more at https://keystonejs.com/docs/guides/auth-and-access-control

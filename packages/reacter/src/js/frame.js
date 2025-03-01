@@ -5,6 +5,7 @@ import title from '../images/title.png';
 import LoginPage from './login.js';
 import { gql, useQuery } from '@apollo/client';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import KeystoneRenderer from './keystone_renderer';
 
 const GET_TEXT_POSTS = gql`
   query {
@@ -16,12 +17,14 @@ const GET_TEXT_POSTS = gql`
   }
 `;
 
-const GET_POSTS = gql`
+const GET_ANNOUNCE = gql`
   query {
-    posts {
+    announces {
       id
       title
-      content
+      content {
+        document
+      }
     }
   }
 `;
@@ -113,7 +116,7 @@ function Main({message, status})
   );
 }
 
-function TextContent()
+function TextPost()
 {
   const { loading, error, data } = useQuery(GET_TEXT_POSTS);
   if (loading) return <p>Loading...</p>;
@@ -131,6 +134,20 @@ function TextContent()
           ))}
         </ul>
       </div>
+    </main>
+  );
+}
+
+function Announce()
+{
+  const { loading, error, data } = useQuery(GET_ANNOUNCE);
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
+  return (
+    <main>
+      {data.announces.map((announce) => (
+        <KeystoneRenderer document={announce.content.document} />
+      ))}
     </main>
   );
 }
@@ -154,7 +171,8 @@ export function Entrance({message, status})
         <AuthenticatedUser />
         <Routes>
           <Route path="/" element={<Main message={message} status={status}/>}></Route>
-          <Route path="/TextContent/*" element={<TextContent />}></Route>
+          <Route path="/TextPost/*" element={<TextPost />}></Route>
+          <Route path="/Announce/*" element={<Announce />}></Route>
           <Route path="/signin/*" element={<LoginPage />}></Route>
           {/* 상단에 위치하는 라우트들의 규칙을 모두 확인, 일치하는 라우트가 없는경우 처리 */}
           <Route path="*" element={<NotFound />}></Route>

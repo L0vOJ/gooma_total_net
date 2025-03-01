@@ -262,6 +262,48 @@ input TagRelateToManyForCreateInput {
   connect: [TagWhereUniqueInput!]
 }
 
+type Announce {
+  id: ID!
+  title: String
+  content: Announce_content_Document
+}
+
+type Announce_content_Document {
+  document(hydrateRelationships: Boolean! = false): JSON!
+}
+
+input AnnounceWhereUniqueInput {
+  id: ID
+}
+
+input AnnounceWhereInput {
+  AND: [AnnounceWhereInput!]
+  OR: [AnnounceWhereInput!]
+  NOT: [AnnounceWhereInput!]
+  id: IDFilter
+  title: StringFilter
+}
+
+input AnnounceOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+}
+
+input AnnounceUpdateInput {
+  title: String
+  content: JSON
+}
+
+input AnnounceUpdateArgs {
+  where: AnnounceWhereUniqueInput!
+  data: AnnounceUpdateInput!
+}
+
+input AnnounceCreateInput {
+  title: String
+  content: JSON
+}
+
 type Tag {
   id: ID!
   name: String
@@ -326,6 +368,12 @@ type Mutation {
   updatePosts(data: [PostUpdateArgs!]!): [Post]
   deletePost(where: PostWhereUniqueInput!): Post
   deletePosts(where: [PostWhereUniqueInput!]!): [Post]
+  createAnnounce(data: AnnounceCreateInput!): Announce
+  createAnnounces(data: [AnnounceCreateInput!]!): [Announce]
+  updateAnnounce(where: AnnounceWhereUniqueInput!, data: AnnounceUpdateInput!): Announce
+  updateAnnounces(data: [AnnounceUpdateArgs!]!): [Announce]
+  deleteAnnounce(where: AnnounceWhereUniqueInput!): Announce
+  deleteAnnounces(where: [AnnounceWhereUniqueInput!]!): [Announce]
   createTag(data: TagCreateInput!): Tag
   createTags(data: [TagCreateInput!]!): [Tag]
   updateTag(where: TagWhereUniqueInput!, data: TagUpdateInput!): Tag
@@ -364,6 +412,9 @@ type Query {
   post(where: PostWhereUniqueInput!): Post
   posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
+  announce(where: AnnounceWhereUniqueInput!): Announce
+  announces(where: AnnounceWhereInput! = {}, orderBy: [AnnounceOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: AnnounceWhereUniqueInput): [Announce!]
+  announcesCount(where: AnnounceWhereInput! = {}): Int
   tag(where: TagWhereUniqueInput!): Tag
   tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
