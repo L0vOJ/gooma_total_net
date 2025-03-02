@@ -123,7 +123,7 @@ export default withAuth<TypeInfo<Session>>(
     session,
     server: {
       cors: {
-        origin: ['http://localhost:3001', 'https://localhost:3011', 'https://netgooma.ddns.net'], // React 앱 주소
+        origin: ['http://localhost:3001', 'http://localhost:3002', 'https://localhost:3011', 'https://netgooma.ddns.net'], // React 앱 주소
         // port: 3011,
         credentials: true,
       },
@@ -164,6 +164,13 @@ export default withAuth<TypeInfo<Session>>(
             console.log("reviece fail");
           });
         });
+        // frontApp.post('/api/logout', (req: Request, res: Response) => {
+        //   res.clearCookie('default_cookie', {
+        //     // 세션 쿠키 생성 시 사용한 옵션(예: domain, path, secure 등)을 여기에 맞춰주어야 합니다.
+        //     path: '/',
+        //   });
+        //   return res.status(200).json({ success: true });
+        // });
         if (process.env.NODE_ENV === 'production') {
           // console.log(process.env.NODE_ENV);
           const reactBuildPath = path.join(__dirname, 'build');

@@ -1,9 +1,9 @@
 // import logo from './logo.svg';
 // import './App.css';
 // import React from 'react';
-import { gql, useQuery } from '@apollo/client';
+// import { gql, useQuery } from '@apollo/client';
 import React, { useEffect, useState } from 'react';
-import { BaseFrame, Entrance, BaseFrameSample } from './js/frame.js';
+import { Entrance } from './js/frame.js'; //BaseFrame, BaseFrameSample
 import axios from 'axios';
 
 const json_test_false = {

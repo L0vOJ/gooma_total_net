@@ -178,7 +178,7 @@ export const lists = {
 
   TextPost: list({
     //   you can find out more at https://keystonejs.com/docs/guides/auth-and-access-control
-    access: allowAll,
+    access: hasSession,
     fields: {
       title: text({ validation: { isRequired: true } }),
 
@@ -256,7 +256,7 @@ export const lists = {
 
   Announce: list({
     //   you can find out more at https://keystonejs.com/docs/guides/auth-and-access-control
-    access: isAdmin,
+    access: hasSession,
     fields: {
       title: text({ validation: { isRequired: true } }),
 

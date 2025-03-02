@@ -56,6 +56,7 @@ const sessionMaxAge = 60 * 60 * 24 * 30
 const session = statelessSessions({
   maxAge: sessionMaxAge,
   secret: process.env.SESSION_SECRET,
+  // cookieName: 'default_cookie', // 직접 지정한 경우
 })
 
 export function DBCheck(): Config['db'] {

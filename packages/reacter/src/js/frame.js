@@ -3,9 +3,12 @@ import '../css/frame.css';
 // import '../css/list_box.css';
 import title from '../images/title.png';
 import LoginPage from './login.js';
+// import LogoutButton from './logout_button.js';
+import Header from './header.js';
 import { gql, useQuery } from '@apollo/client';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-import KeystoneRenderer from './keystone_renderer';
+// import KeystoneRenderer from './keystone_renderer';
+import CustomDocumentRenderer from './custom_renderer';
 
 const GET_TEXT_POSTS = gql`
   query {
@@ -41,15 +44,20 @@ const GET_USERS = gql`
   }
 `;
         
-function Header()
-{
-  return (
-    <img src={title} className="title-logo" alt="logo" />
-  );
-}
+// function Header()
+// {
+//   return (
+//     <img src={title} className="title-logo" alt="logo" />
+//   );
+// }
 
 function AuthenticatedUser() {
-  const { loading, error, data } = useQuery(GET_USERS);
+  const { loading, error, data, refetch } = useQuery(GET_USERS);
+
+  React.useEffect(() => {
+    refetch(); // 메인 페이지 마운트 시 최신 인증 정보를 가져옴
+  }, [refetch]);
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
   
@@ -85,6 +93,7 @@ function AuthenticatedUser() {
           <td width="28%">User: {user.name ? user.name : user.email}</td>
         </tr>
       </table>
+      {/* <LogoutButton/> */}
     </div>
   );
 }
@@ -95,7 +104,7 @@ function TailEnd()
   return (
     <footer>
       <div class="container">
-        <p class="tail">2025 L0vOJ | All Rights Blabla Reserved?</p>
+        <p class="tail">2025 L0vOJ | All Rights Blabla Reserved? | idk how to write these things</p>
       </div>
     </footer>
   );
@@ -124,7 +133,7 @@ function TextPost()
   return (
     <main>
       <div class="container">
-        <h2>텍스트 공지 내역:</h2>
+        <h2>[전체 포스트 내역]</h2>
         <ul>
           {data.textPosts.map((textPost) => (
             <li key={textPost.id}>
@@ -144,11 +153,20 @@ function Announce()
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
   return (
-    <main>
+    <div>
       {data.announces.map((announce) => (
-        <KeystoneRenderer document={announce.content.document} />
+        // <KeystoneRenderer document={announce.content.document} />
+        <main>
+          <div class="container">
+            <h1>{announce.title}</h1>
+            <CustomDocumentRenderer document={announce.content.document} />
+          </div>
+        </main>
       ))}
-    </main>
+    </div>
+    // {data.announces.map((announce) => (
+    //   <KeystoneRenderer document={announce.content.document} />
+    // ))} 
   );
 }
 
@@ -171,8 +189,8 @@ export function Entrance({message, status})
         <AuthenticatedUser />
         <Routes>
           <Route path="/" element={<Main message={message} status={status}/>}></Route>
-          <Route path="/TextPost/*" element={<TextPost />}></Route>
-          <Route path="/Announce/*" element={<Announce />}></Route>
+          <Route path="/textpost/*" element={<TextPost />}></Route>
+          <Route path="/announce/*" element={<Announce />}></Route>
           <Route path="/signin/*" element={<LoginPage />}></Route>
           {/* 상단에 위치하는 라우트들의 규칙을 모두 확인, 일치하는 라우트가 없는경우 처리 */}
           <Route path="*" element={<NotFound />}></Route>
@@ -232,115 +250,115 @@ function PlayerStatus({message, status})
 }
 
 
-export function BaseFrame({message, status})
-{
-  const { loading, error, data } = useQuery(GET_TEXT_POSTS);
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
-  return(
-    <body>
-      {/* <!-- Header Section --> */}
-      {/* <HaderSample /> */}
-      <img src={title} className="title-logo" alt="logo" />
-      {/* <!-- Main Content Section --> */}
-      <main>
-        <div class="container">
-          <ServerStatus message={message} status={status}/>
-          {
-            status && message.online && 
-            <PlayerStatus message={message} status={status}/>
-          }
-          <h2>Posts</h2>
-          <ul>
-            {data.posts.map((post) => (
-              <li key={post.id}>
-                <h2>{post.title}</h2>
-                <p>{post.content}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </main>
-      {/* <!-- Footer Section --> */}
-      <footer>
-        <div class="container">
-          <p class="tail">2025 L0vOJ | All Rights Blabla Reserved?</p>
-        </div>
-      </footer>
-    </body>
-  );
-}
+// export function BaseFrame({message, status})
+// {
+//   const { loading, error, data } = useQuery(GET_TEXT_POSTS);
+//   if (loading) return <p>Loading...</p>;
+//   if (error) return <p>Error: {error.message}</p>;
+//   return(
+//     <body>
+//       {/* <!-- Header Section --> */}
+//       {/* <HaderSample /> */}
+//       <img src={title} className="title-logo" alt="logo" />
+//       {/* <!-- Main Content Section --> */}
+//       <main>
+//         <div class="container">
+//           <ServerStatus message={message} status={status}/>
+//           {
+//             status && message.online && 
+//             <PlayerStatus message={message} status={status}/>
+//           }
+//           <h2>Posts</h2>
+//           <ul>
+//             {data.posts.map((post) => (
+//               <li key={post.id}>
+//                 <h2>{post.title}</h2>
+//                 <p>{post.content}</p>
+//               </li>
+//             ))}
+//           </ul>
+//         </div>
+//       </main>
+//       {/* <!-- Footer Section --> */}
+//       <footer>
+//         <div class="container">
+//           <p class="tail">2025 L0vOJ | All Rights Blabla Reserved?</p>
+//         </div>
+//       </footer>
+//     </body>
+//   );
+// }
 
-function HaderSample()
-{
-  return(
-    <header>
-      <div class="container">
-        <h1>My Website</h1>
-        <nav>
-          <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Services</a></li>
-            <li><a href="#">Contact</a></li>
-          </ul>
-        </nav>
-      </div>
-    </header>
-  );
-}
+// function HaderSample()
+// {
+//   return(
+//     <header>
+//       <div class="container">
+//         <h1>My Website</h1>
+//         <nav>
+//           <ul>
+//             <li><a href="#">Home</a></li>
+//             <li><a href="#">About</a></li>
+//             <li><a href="#">Services</a></li>
+//             <li><a href="#">Contact</a></li>
+//           </ul>
+//         </nav>
+//       </div>
+//     </header>
+//   );
+// }
 
-export function BaseFrameSample()
-{
-  return(
-    <body>
-      {/* <!-- Header Section --> */}
-      <header>
-        <div class="container">
-          <h1>My Website</h1>
-          <nav>
-            <ul>
-              <li><a href="#">Home</a></li>
-              <li><a href="#">About</a></li>
-              <li><a href="#">Services</a></li>
-              <li><a href="#">Contact</a></li>
-            </ul>
-          </nav>
-        </div>
-      </header>
+// export function BaseFrameSample()
+// {
+//   return(
+//     <body>
+//       {/* <!-- Header Section --> */}
+//       <header>
+//         <div class="container">
+//           <h1>My Website</h1>
+//           <nav>
+//             <ul>
+//               <li><a href="#">Home</a></li>
+//               <li><a href="#">About</a></li>
+//               <li><a href="#">Services</a></li>
+//               <li><a href="#">Contact</a></li>
+//             </ul>
+//           </nav>
+//         </div>
+//       </header>
 
-      {/* <!-- Main Content Section --> */}
-      <main>
-        <div class="container">
-          <section class="intro">
-            <h2>Welcome to My Website</h2>
-            <p>This is a basic template to get you started with your website.</p>
-          </section>
+//       {/* <!-- Main Content Section --> */}
+//       <main>
+//         <div class="container">
+//           <section class="intro">
+//             <h2>Welcome to My Website</h2>
+//             <p>This is a basic template to get you started with your website.</p>
+//           </section>
 
-          <section class="services">
-            <h2>Our Services</h2>
-            <div class="service-item">
-              <h3>Web Development</h3>
-              <p>Building responsive and modern websites.</p>
-            </div>
-            <div class="service-item">
-              <h3>UI/UX Design</h3>
-              <p>Creating user-friendly interfaces and experiences.</p>
-            </div>
-            <div class="service-item">
-              <h3>SEO Optimization</h3>
-              <p>Improving website visibility and ranking on search engines.</p>
-            </div>
-          </section>
-        </div>
-      </main>
+//           <section class="services">
+//             <h2>Our Services</h2>
+//             <div class="service-item">
+//               <h3>Web Development</h3>
+//               <p>Building responsive and modern websites.</p>
+//             </div>
+//             <div class="service-item">
+//               <h3>UI/UX Design</h3>
+//               <p>Creating user-friendly interfaces and experiences.</p>
+//             </div>
+//             <div class="service-item">
+//               <h3>SEO Optimization</h3>
+//               <p>Improving website visibility and ranking on search engines.</p>
+//             </div>
+//           </section>
+//         </div>
+//       </main>
 
-      {/* <!-- Footer Section --> */}
-      <footer>
-        <div class="container">
-          <p>2025 My Website | All Rights Maybe not Reserved</p>
-        </div>
-      </footer>
-    </body>
-  );
-}
+//       {/* <!-- Footer Section --> */}
+//       <footer>
+//         <div class="container">
+//           <p>2025 My Website | All Rights Maybe not Reserved</p>
+//         </div>
+//       </footer>
+//     </body>
+//   );
+// }
