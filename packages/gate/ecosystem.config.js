@@ -17,6 +17,7 @@ module.exports = {
       	"NODE_ENV": "production",
         "DNS_HOST": "netgooma.ddns.net",
         "GATE_DB": "mysql",
+        // "SESSION_SECRET": "",
         // "GATE_DB": "sqlite",
       }
     },

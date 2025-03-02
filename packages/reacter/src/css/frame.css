@@ -9,10 +9,10 @@
 /****** Basic body styling 여기에 기본으로 다 때려박힌게 많다 참조 바람 ******/
 body {
     font-family: Arial, sans-serif;
-    line-height: 1.6;
-    background-color: #f4f4f4;
+    line-height: 1.5;
     color: #333;
-
+    
+    /* background-color: #f4f4f4; */
     background-color: #282c34;
     min-height: 100vh;
     display: flex;
@@ -56,9 +56,9 @@ body {
 
 /* Header styling */
 header {
-    background: #333;
+    /* background: #333; */
     color: #fff;
-    padding: 20px 0;
+    /* padding: 20px 0; */
 }
 
 header h1 {

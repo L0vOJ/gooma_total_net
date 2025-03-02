@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import '../css/frame.css';
 // import '../css/list_box.css';
-import title from '../images/title.png';
+// import title from '../images/title.png';
+import UserMenuBar from './user_menu_bar.js';
 import LoginPage from './login.js';
-// import LogoutButton from './logout_button.js';
+// import Logout from './logout.js';
 import Header from './header.js';
 import { gql, useQuery } from '@apollo/client';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
@@ -71,29 +72,33 @@ function AuthenticatedUser() {
   // 로그인된 사용자가 없으면 null이 반환될 수 있음
   if (!data || !data.authenticatedItem) {
     return (
-      <main>
-        <div className="container" style={{ "text-align": "center" }}>
-          <Link to='/signin'>
-            <button type="button" style={{ padding: '0.5rem 25%'}}>
-              login
-            </button>
-          </Link>
-        </div>
-      </main>
+      <div></div>
+      // <main>
+      //   <div className="container" style={{ "text-align": "center" }}>
+      //     <h2>-- 포스트, 공지 확인하려면 로그인이 필요합니다 --</h2>
+      //     <Link to='/signin'>
+      //       <button type="button" style={{ padding: '0.5rem 25%'}}>
+      //         login
+      //       </button>
+      //     </Link>
+      //   </div>
+      // </main>
     );
   }
   
   return (
-    <div class="service-item" style={{ width: "50vmin" }}>
-      <table class="text_default" height="100%">
-        <tr key={user.id}>
-          <td width="10%">
-            <img class="head-logo" src={HeadDisplay(Notch_uuid, 100)} />
-          </td>
-          <td width="28%">User: {user.name ? user.name : user.email}</td>
-        </tr>
+    <div className="service-item" style={{ width: "50vmin" }}>
+      <table className="text_default" height="100%">
+        <tbody>
+          <tr key={user.id}>
+            <td width="10%">
+              <img className="head-logo" src={HeadDisplay(Notch_uuid, 100)} />
+            </td>
+            <td width="28%">User: {user.name ? user.name : user.email}</td>
+          </tr>
+        </tbody>
       </table>
-      {/* <LogoutButton/> */}
+      <UserMenuBar/>
     </div>
   );
 }
@@ -103,8 +108,8 @@ function TailEnd()
 {
   return (
     <footer>
-      <div class="container">
-        <p class="tail">2025 L0vOJ | All Rights Blabla Reserved? | idk how to write these things</p>
+      <div className="container">
+        <p className="tail">2025 L0vOJ | All Rights Blabla Reserved? | idk how to write these things</p>
       </div>
     </footer>
   );
@@ -114,7 +119,7 @@ function Main({message, status})
 {
   return (
     <main>
-      <div class="container">
+      <div className="container">
         <ServerStatus message={message} status={status}/>
         {
           status && message.online && 
@@ -132,7 +137,7 @@ function TextPost()
   if (error) return <p>Error: {error.message}</p>;
   return (
     <main>
-      <div class="container">
+      <div className="container">
         <h2>[전체 포스트 내역]</h2>
         <ul>
           {data.textPosts.map((textPost) => (
@@ -155,9 +160,8 @@ function Announce()
   return (
     <div>
       {data.announces.map((announce) => (
-        // <KeystoneRenderer document={announce.content.document} />
         <main>
-          <div class="container">
+          <div className="container">
             <h1>{announce.title}</h1>
             <CustomDocumentRenderer document={announce.content.document} />
           </div>
@@ -173,9 +177,11 @@ function Announce()
 function NotFound()
 {
   return (
-    <div class="container">
-      <h2 class="tail">404 not found</h2>
-    </div>
+    <main>
+      <div className="container">
+        <h2 className="tail">404 not found</h2>
+      </div>
+    </main>
   );
 }
 
@@ -208,17 +214,17 @@ function ServerStatus({message, status})
   const url = "https://netgooma.ddns.net";
   const dynmap_link = url + "/map";
   return(
-    <section class="intro">
+    <section className="intro">
       {
         status 
         ? message.online
-          ? <h2 class="text_default">현재 서버:&ensp;
+          ? <h2 className="text_default">현재 서버:&ensp;
               <Link to={dynmap_link}>
                 {message.motd.clean}  
               </Link>
             </h2>
-          : <h2 class="text_default">현재 서버: 작동 중지 <br></br>-- 관리자에게 문의 바랍니다 --</h2> 
-        : <h2 class="text_default">로딩 중... </h2>
+          : <h2 className="text_default">현재 서버: 작동 중지 <br></br>-- 관리자에게 문의 바랍니다 --</h2> 
+        : <h2 className="text_default">로딩 중... </h2>
       }
     </section>
   );
@@ -230,11 +236,11 @@ function PlayerStatus({message, status})
     "https://minotar.net/avatar/" + uuid + "/" + size
   );
   const PlayerInfo = (item, index) => (
-    <div class="service-item">
-      <table class="text_default" height="100%">
+    <div className="service-item">
+      <table className="text_default" height="100%">
         <tr>
           <td width="20%">
-            <img class="head-logo" src={HeadDisplay(item.uuid, 100)} />
+            <img className="head-logo" src={HeadDisplay(item.uuid, 100)} />
           </td>
           <td width="28%"> {item.name_clean}</td>
         </tr>
@@ -242,8 +248,8 @@ function PlayerStatus({message, status})
     </div>
   );
   return(
-    <section class="services">
-      <h2 class="text_default">Players: {message.players.online}</h2>
+    <section className="services">
+      <h2 className="text_default">Players: {message.players.online}</h2>
       {message.players.list.map(PlayerInfo)}
     </section>
   );
@@ -262,7 +268,7 @@ function PlayerStatus({message, status})
 //       <img src={title} className="title-logo" alt="logo" />
 //       {/* <!-- Main Content Section --> */}
 //       <main>
-//         <div class="container">
+//         <div className="container">
 //           <ServerStatus message={message} status={status}/>
 //           {
 //             status && message.online && 
@@ -281,8 +287,8 @@ function PlayerStatus({message, status})
 //       </main>
 //       {/* <!-- Footer Section --> */}
 //       <footer>
-//         <div class="container">
-//           <p class="tail">2025 L0vOJ | All Rights Blabla Reserved?</p>
+//         <div className="container">
+//           <p className="tail">2025 L0vOJ | All Rights Blabla Reserved?</p>
 //         </div>
 //       </footer>
 //     </body>
@@ -293,7 +299,7 @@ function PlayerStatus({message, status})
 // {
 //   return(
 //     <header>
-//       <div class="container">
+//       <div className="container">
 //         <h1>My Website</h1>
 //         <nav>
 //           <ul>
@@ -314,7 +320,7 @@ function PlayerStatus({message, status})
 //     <body>
 //       {/* <!-- Header Section --> */}
 //       <header>
-//         <div class="container">
+//         <div className="container">
 //           <h1>My Website</h1>
 //           <nav>
 //             <ul>
@@ -329,23 +335,23 @@ function PlayerStatus({message, status})
 
 //       {/* <!-- Main Content Section --> */}
 //       <main>
-//         <div class="container">
-//           <section class="intro">
+//         <div className="container">
+//           <section className="intro">
 //             <h2>Welcome to My Website</h2>
 //             <p>This is a basic template to get you started with your website.</p>
 //           </section>
 
-//           <section class="services">
+//           <section className="services">
 //             <h2>Our Services</h2>
-//             <div class="service-item">
+//             <div className="service-item">
 //               <h3>Web Development</h3>
 //               <p>Building responsive and modern websites.</p>
 //             </div>
-//             <div class="service-item">
+//             <div className="service-item">
 //               <h3>UI/UX Design</h3>
 //               <p>Creating user-friendly interfaces and experiences.</p>
 //             </div>
-//             <div class="service-item">
+//             <div className="service-item">
 //               <h3>SEO Optimization</h3>
 //               <p>Improving website visibility and ranking on search engines.</p>
 //             </div>
@@ -355,7 +361,7 @@ function PlayerStatus({message, status})
 
 //       {/* <!-- Footer Section --> */}
 //       <footer>
-//         <div class="container">
+//         <div className="container">
 //           <p>2025 My Website | All Rights Maybe not Reserved</p>
 //         </div>
 //       </footer>

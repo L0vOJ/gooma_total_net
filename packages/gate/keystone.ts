@@ -164,13 +164,14 @@ export default withAuth<TypeInfo<Session>>(
             console.log("reviece fail");
           });
         });
-        // frontApp.post('/api/logout', (req: Request, res: Response) => {
-        //   res.clearCookie('default_cookie', {
-        //     // 세션 쿠키 생성 시 사용한 옵션(예: domain, path, secure 등)을 여기에 맞춰주어야 합니다.
-        //     path: '/',
-        //   });
-        //   return res.status(200).json({ success: true });
-        // });
+        frontApp.post('/api/logout', (req: Request, res: Response) => {
+          res.clearCookie('default_cookie', {
+            // 세션 쿠키 생성 시 사용한 옵션(예: domain, path, secure 등)을 여기에 맞춰주어야 합니다.
+            path: '/',
+          });
+          // console.log("logout_test")
+          return res.status(200).json({ success: true });
+        });
         if (process.env.NODE_ENV === 'production') {
           // console.log(process.env.NODE_ENV);
           const reactBuildPath = path.join(__dirname, 'build');
@@ -180,6 +181,8 @@ export default withAuth<TypeInfo<Session>>(
             res.sendFile(path.join(reactBuildPath, 'index.html'));
             // res.send('Operate in Production Mode');
           });
+          http.createServer(frontApp).listen(3001);
+          HttpsOpen(host_name, frontApp, 3011);
         } 
         else {
           // 개발 환경에서는 React 앱의 핫 리로딩을 위해 다른 처리를 할 수 있습니다.
@@ -188,9 +191,7 @@ export default withAuth<TypeInfo<Session>>(
             // console.log(process.env.NODE_ENV);
           });
         }
-        frontApp.use(restrictAccess(context)); //뒤로 빼놔야 막아진다
-        http.createServer(frontApp).listen(3001);
-        HttpsOpen(host_name, frontApp, 3011);
+        frontApp.use(restrictAccess(context)); //구체적인 이유는 아직 잘 모르지만 일단 뒤로 빼놔야 막아진다
       },
     },
   }) satisfies Config

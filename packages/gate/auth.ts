@@ -55,8 +55,8 @@ const sessionMaxAge = 60 * 60 * 24 * 30
 // you can find out more at https://keystonejs.com/docs/apis/session#session-api
 const session = statelessSessions({
   maxAge: sessionMaxAge,
-  secret: process.env.SESSION_SECRET,
-  // cookieName: 'default_cookie', // 직접 지정한 경우
+  secret: process.env.SESSION_SECRET ?? randomBytes(32).toString('base64'),
+  cookieName: 'default_cookie', // 직접 지정한 경우
 })
 
 export function DBCheck(): Config['db'] {

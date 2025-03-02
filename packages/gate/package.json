@@ -3,7 +3,7 @@
   "version": "1.0.3",
   "private": true,
   "scripts": {
-    "dev": "NODE_ENV=production GATE_DB=mysql keystone dev",
+    "dev": "GATE_DB=mysql keystone dev",
     "start": "NODE_ENV=production GATE_DB=mysql keystone start",
     "start:sqlite": "NODE_ENV=production GATE_DB=sqlite keystone start",
     "build": "GATE_DB=mysql keystone build",
