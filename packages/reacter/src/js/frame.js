@@ -137,16 +137,14 @@ function Announce()
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
   return (
-    <div>
+    <main>
       {data.announces.map((announce) => (
-        <main>
           <div className="container">
             <h1 className="text_default">{announce.title}</h1>
             <CustomDocumentRenderer document={announce.content.document} />
           </div>
-        </main>
       ))}
-    </div>
+    </main>
     // {data.announces.map((announce) => (
     //   <KeystoneRenderer document={announce.content.document} />
     // ))} 
