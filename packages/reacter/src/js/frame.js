@@ -1,18 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // 혹은 Next.js의 useRouter 사용
+import React from 'react'; //, { useEffect, useState }
+
 import '../css/frame.css';
 // import '../css/list_box.css';
-// import title from '../images/title.png';
 import UserMenuBar from './user_menu_bar.js';
 import LoginPage from './login.js';
-// import Logout from './logout.js';
 import Header from './header.js';
+import Server from './server.js';
+import Main from './main.js';
 import { gql, useQuery } from '@apollo/client';
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-// import KeystoneRenderer from './keystone_renderer';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import CustomDocumentRenderer from './custom_renderer';
-import Loading from './loading';
-import axios from 'axios';
+// import axios from 'axios';
 
 const GET_TEXT_POSTS = gql`
   query {
@@ -47,42 +45,6 @@ const GET_USERS = gql`
     }
   }
 `;
-        
-// function Header()
-// {
-//   return (
-//     <img src={title} className="title-logo" alt="logo" />
-//   );
-// }
-
-const json_test_false = {
-  online: false,
-  host: 'not found',
-  port: 25565,
-  ip_address: '1.1.1.1',
-};
-
-const json_test_true = {
-  online: true,
-  host: 'blabla',
-  port: 25565,
-  ip_address: '1.2.3.4',
-  motd: {
-    raw: 'test',
-    clean: 'test',
-    html: '<span><span>test</span></span>'
-  },
-  players: { online: 2, max: 20, list: [ 
-    {
-      "uuid": "398a6080-9fd5-44ed-ad30-0072d5efdf10",
-      "name_clean": "L0vOJ",
-    },
-    {
-      "uuid": "069a79f4-44e9-4726-a5be-fca90e38aaf5",
-      "name_clean": "Notch",
-    }
-  ] },
-};
 
 function AuthenticatedUser() {
   const { loading, error, data, refetch } = useQuery(GET_USERS);
@@ -147,148 +109,6 @@ function TailEnd()
   );
 }
 
-function Main()
-{
-  const [message, setMessage] = useState(json_test_false);
-  const [status, setstatus] = useState(false);
-  useEffect(() => {
-    // Express 서버의 API를 호출
-    axios.get('/api/mcs')
-      .then(response => {
-        setstatus(true);
-        setMessage(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
-  }, []);
-  return (
-    <main>
-      <div className="container">
-        <ServerStatus message={message} status={status}/>
-        {
-          status && message.online && 
-          <PlayerStatus message={message} status={status}/>
-        }
-      </div>
-    </main>
-  );
-}
-
-function Server()
-{
-  // const [message, setMessage] = useState(json_test_false);
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const [list, setServerList] = useState(null);
-  const [status, setServerStatus] = useState(null);
-  useEffect(() => {
-    // Express 서버의 API를 호출
-    axios.get('/api/server/list')
-      .then(response => {
-        setServerList(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
-    axios.get('/api/server/status')
-      .then(response => {
-        setServerStatus(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
-  }, []);
-  if (!list || !status) {
-    return <div>Loading...</div>;
-  }
-  // handleServer 함수는 상태, 모드팩, 서버 값을 받아 API 요청을 보냅니다.
-  const handleServer = async (statusVal, modpackVal = '', serverVal = '') => {
-    try {
-      setLoading(true);
-      // URL에 쿼리 스트링 생성 (입력값은 encodeURIComponent로 안전하게 처리)
-      const url = `/api/server/control?status=${encodeURIComponent(statusVal)}&modpack=${encodeURIComponent(modpackVal)}&server=${encodeURIComponent(serverVal)}`;
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error('Server handle failed');
-      }
-      // 원하는 경우 요청 성공 후 다른 페이지로 이동
-      setLoading(false);
-      navigate('/');
-    } catch (err) {
-      console.error('Server handle error:', err);
-    }
-  };
-  return (
-    <main style={mainStyle}>
-      {loading ? <Loading /> : null}
-      <div style={containerStyle}>
-        <h2 style={titleStyle}>Server Status: {status.output}</h2>
-        <div style={itemsContainerStyle}>
-          <div style={itemBoxStyle}>
-            <a style={{ cursor: "pointer" }} onClick={() => handleServer("on")}>On</a>
-          </div>
-          <div style={itemBoxStyle}>
-            <a style={{ cursor: "pointer" }} onClick={() => handleServer("off")}>Off</a>
-          </div>
-        </div>
-      </div>
-      {Object.keys(list).map((key) => (
-        <div key={key} style={containerStyle}>
-          <h2 style={titleStyle}>{key}</h2>
-          <div style={itemsContainerStyle}>
-            {list[key].map((item, index) => (
-              <div key={index} style={itemBoxStyle}>
-                <a
-                  style={{ cursor: "pointer" }}
-                  onClick={() => handleServer("change", key, item)}
-                >
-                  {item}
-                </a>
-              </div>
-            ))}
-          </div>
-        </div>
-      ))}
-    </main>
-  );
-}
-
-const mainStyle = {
-  padding: '20px',
-  fontFamily: 'Arial, sans-serif',
-};
-
-const containerStyle = {
-  border: '1px solid #ddd',
-  borderRadius: '8px',
-  padding: '16px',
-  margin: '16px 0',
-  backgroundColor: '#fff',
-};
-
-const titleStyle = {
-  fontSize: '1.5rem',
-  marginBottom: '12px',
-  borderBottom: '1px solid #eee',
-  paddingBottom: '8px',
-};
-
-const itemsContainerStyle = {
-  display: 'flex',
-  flexWrap: 'wrap',
-  gap: '12px',
-};
-
-const itemBoxStyle = {
-  backgroundColor: '#f8f8f8',
-  padding: '10px 14px',
-  borderRadius: '4px',
-  border: '1px solid #ccc',
-  fontSize: '1rem',
-  // cursor : "pointer"
-};
-
 function TextPost()
 {
   const { loading, error, data } = useQuery(GET_TEXT_POSTS);
@@ -297,10 +117,10 @@ function TextPost()
   return (
     <main>
       <div className="container">
-        <h2>[전체 포스트 내역]</h2>
+        <h1 className="text_default">[전체 포스트 내역]</h1>
         <ul>
           {data.textPosts.map((textPost) => (
-            <li key={textPost.id}>
+            <li key={textPost.id} className="text_document">
               <h2>{textPost.title}</h2>
               <p>{textPost.content}</p>
             </li>
@@ -321,7 +141,7 @@ function Announce()
       {data.announces.map((announce) => (
         <main>
           <div className="container">
-            <h1>{announce.title}</h1>
+            <h1 className="text_default">{announce.title}</h1>
             <CustomDocumentRenderer document={announce.content.document} />
           </div>
         </main>
@@ -391,55 +211,6 @@ export function Entrance()
     </body>
   );
 };
-
-
-
-function ServerStatus({message, status})
-{
-  const url = "https://netgooma.ddns.net";
-  const dynmap_link = url + "/map";
-  return(
-    <section className="intro">
-      {
-        status 
-        ? message.online
-          ? <h2 className="text_default">현재 서버:&ensp;
-              <Link to={dynmap_link}>
-                {message.motd.clean}  
-              </Link>
-            </h2>
-          : <h2 className="text_default">현재 서버: 작동 중지 <br></br>-- 관리자에게 문의 바랍니다 --</h2> 
-        : <h2 className="text_default">로딩 중... </h2>
-      }
-    </section>
-  );
-}
-
-function PlayerStatus({message, status})
-{
-  const HeadDisplay = (uuid, size) => (
-    "https://minotar.net/avatar/" + uuid + "/" + size
-  );
-  const PlayerInfo = (item, index) => (
-    <div className="service-item">
-      <table className="text_default" height="100%">
-        <tr>
-          <td width="20%">
-            <img className="head-logo" src={HeadDisplay(item.uuid, 100)} />
-          </td>
-          <td width="28%"> {item.name_clean}</td>
-        </tr>
-      </table>
-    </div>
-  );
-  return(
-    <section className="services">
-      <h2 className="text_default">Players: {message.players.online}</h2>
-      {message.players.list.map(PlayerInfo)}
-    </section>
-  );
-}
-
 
 // export function BaseFrame({message, status})
 // {

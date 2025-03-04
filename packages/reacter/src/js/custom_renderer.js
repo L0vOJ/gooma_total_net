@@ -1,5 +1,6 @@
 // CustomDocumentRenderer.js
 import React from 'react';
+import '../css/frame.css';
 
 function renderCustomNode(node) {
   if (!node) return null;
@@ -71,7 +72,7 @@ function renderCustomNode(node) {
 
 export default function CustomDocumentRenderer({ document }) {
   return (
-    <div>
+    <div className="text_document">
       {document.map((node, idx) => (
         <React.Fragment key={idx}>{renderCustomNode(node)}</React.Fragment>
       ))}
