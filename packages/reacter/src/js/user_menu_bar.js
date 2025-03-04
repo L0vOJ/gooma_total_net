@@ -5,7 +5,7 @@ import Logout from './logout.js';
 export default function UserMenuBar() {
   return (
     <header style={{ background: "#38c9b5" }}>
-      <nav style={{ padding: "1rem", background: "#454545", "borderRadius": "1.5vmin"}}>
+      <nav style={{ padding: "0.5rem", background: "#454545", "borderRadius": "1.5vmin"}}>
         {/* <ul style={{ display: "flex", listStyle: "none", gap: "1rem", margin: 0 }}> */}
         <ul style={{ "textAlign": "center", listStyle: "none", gap: "1rem", margin: 0 }}>
           {/* <li>

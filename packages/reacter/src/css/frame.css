@@ -62,6 +62,7 @@ body {
     width: 90%;
     margin: 0 auto;
     max-width: 1200px;
+    min-width: 500px;
 }
 
 /* Header styling */
@@ -99,7 +100,7 @@ nav ul li a:hover {
 
 /* Main content section */
 main {
-    width: 50vmin;
+    width: 80vmin;
     padding: 20px 0;
     background-color: #35a3a7;
     border-radius: 5px;
@@ -116,6 +117,9 @@ section {
 } */
 
 .service-item {
+    width: 80vmin;
+    max-width: 1200px;
+    min-width: 500px;
     border: 2px solid #1f5363;
     background-color: #38c9b5;
     margin: 10px 0;

@@ -18,7 +18,7 @@ const GET_USERS = gql`
 function HeaderDefault()
 {
   return (
-    <nav style={{ padding: "1rem", background: "#454545", "borderRadius": "1.5vmin"}}>
+    <nav style={{ padding: "0.5rem", background: "#454545", "borderRadius": "1.5vmin"}}>
       <ul style={{ display: "flex", listStyle: "none", gap: "1rem", margin: 0 }}>
         <li>
           <NavLink 
@@ -50,7 +50,7 @@ function HeaderDefault()
 function HeaderLogin()
 {
   return(
-    <nav style={{ padding: "1rem", background: "#454545", "borderRadius": "1.5vmin"}}>
+    <nav style={{ padding: "0.5rem", background: "#454545", "borderRadius": "1.5vmin"}}>
       <ul style={{ display: "flex", listStyle: "none", gap: "1rem", margin: 0 }}>
         <li>
           <NavLink 

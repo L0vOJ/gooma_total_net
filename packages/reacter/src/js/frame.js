@@ -81,14 +81,14 @@ function AuthenticatedUser() {
   }
   
   return (
-    <div className="service-item" style={{ width: "50vmin" }}>
+    <div className="service-item">
       <table className="text_default" height="100%">
         <tbody>
           <tr key={user.id}>
             <td width="10%">
               <img className="head-logo" src={HeadDisplay(Notch_uuid, 100)} />
             </td>
-            <td width="28%">User: {user.name ? user.name : user.email}</td>
+            <td width="16%">User: {user.name ? user.name : user.email}</td>
           </tr>
         </tbody>
       </table>
