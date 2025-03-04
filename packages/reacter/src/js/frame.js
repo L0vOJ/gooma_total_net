@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // 혹은 Next.js의 useRouter 사용
 import '../css/frame.css';
 // import '../css/list_box.css';
 // import title from '../images/title.png';
@@ -176,6 +177,7 @@ function Main()
 function Server()
 {
   // const [message, setMessage] = useState(json_test_false);
+  const navigate = useNavigate();
   const [list, setServerList] = useState(null);
   const [status, setServerStatus] = useState(null);
   useEffect(() => {
@@ -216,13 +218,13 @@ function Server()
   return (
     <main style={mainStyle}>
       <div style={containerStyle}>
-        <h2 style={titleStyle}>Server Status</h2>
+        <h2 style={titleStyle}>Server Status: {status.output}</h2>
         <div style={itemsContainerStyle}>
           <div style={itemBoxStyle}>
-            <a style={{ cursor: "pointer", color: status.output == "active" ? "orange" : "white" }} onClick={() => handleServer("on")}>On</a>
+            <a style={{ cursor: "pointer" }} onClick={() => handleServer("on")}>On</a>
           </div>
           <div style={itemBoxStyle}>
-            <a style={{ cursor: "pointer", color: status.output == "inactive" ? "orange" : "white" }} onClick={() => handleServer("off")}>Off</a>
+            <a style={{ cursor: "pointer" }} onClick={() => handleServer("off")}>Off</a>
           </div>
         </div>
       </div>
@@ -339,7 +341,32 @@ function NotFound()
 
 export function Entrance()
 {
+  const { loading, error, data, refetch } = useQuery(GET_USERS);
+
+  React.useEffect(() => {
+    refetch(); // 메인 페이지 마운트 시 최신 인증 정보를 가져옴
+  }, [refetch]);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
   //basename="/main": React 라우터가 /main을 기준으로 동작하도록 설정.
+  if (!data || !data.authenticatedItem) {
+    return (
+      <body>
+        <BrowserRouter basename="/main">
+          <Header />
+          <AuthenticatedUser />
+          <Routes>
+            <Route path="/" element={<Main />}></Route>
+            <Route path="/signin/*" element={<LoginPage />}></Route>
+            {/* 상단에 위치하는 라우트들의 규칙을 모두 확인, 일치하는 라우트가 없는경우 처리 */}
+            <Route path="*" element={<NotFound />}></Route>
+          </Routes>
+          <TailEnd />
+        </BrowserRouter>
+      </body>
+    );
+  }
 	return (
     <body>
       <BrowserRouter basename="/main">

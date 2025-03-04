@@ -166,12 +166,12 @@ export default withAuth<TypeInfo<Session>>(
           });
         });
         frontApp.use('/api/server/status', (req, res) => {
-          const cmd = `./home/${process.env.USER}/gooma_ws/gooma_shell/interface/service_ctl.sh is-active gooma_server.service`;
+          const cmd = `bash /home/${process.env.USER}/gooma_ws/gooma_shell/interface/service_ctl.sh is-active gooma_server.service`;
           exec(cmd, (error, stdout, stderr) => {
-            if (error) {
-              console.error(`Error executing script: ${error}`);
-              return res.status(500).send(`Script  Error: ${error.message}`);
-            }
+            // if (error) {
+            //   console.error(`Error executing script: ${error}`);
+            //   return res.status(500).send(`Script  Error: ${error.message}`);
+            // }
             // stdout에 스크립트 실행 결과가 담깁니다.
             res.json({output: stdout});
           });
@@ -187,7 +187,7 @@ export default withAuth<TypeInfo<Session>>(
         frontApp.get('/api/server/control', (req, res) => {
           const { status, modpack, server } = req.query;
           // 실제 사용 시, 입력값에 대한 검증과 보안 처리가 필요합니다.
-          const cmd = `./home/${process.env.USER}/gooma_ws/gooma_shell/interface/server_ctl.sh ${status} ${modpack} ${server}`;
+          const cmd = `bash /home/${process.env.USER}/gooma_ws/gooma_shell/interface/server_ctl.sh ${status} ${modpack} ${server}`;
           exec(cmd , (error, stdout, stderr) => {
             if (error) {
               console.error(`Error executing script: ${error}`);
