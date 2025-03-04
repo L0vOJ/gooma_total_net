@@ -10,6 +10,7 @@ import { gql, useQuery } from '@apollo/client';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 // import KeystoneRenderer from './keystone_renderer';
 import CustomDocumentRenderer from './custom_renderer';
+import axios from 'axios';
 
 const GET_TEXT_POSTS = gql`
   query {
@@ -51,6 +52,35 @@ const GET_USERS = gql`
 //     <img src={title} className="title-logo" alt="logo" />
 //   );
 // }
+
+const json_test_false = {
+  online: false,
+  host: 'not found',
+  port: 25565,
+  ip_address: '1.1.1.1',
+};
+
+const json_test_true = {
+  online: true,
+  host: 'blabla',
+  port: 25565,
+  ip_address: '1.2.3.4',
+  motd: {
+    raw: 'test',
+    clean: 'test',
+    html: '<span><span>test</span></span>'
+  },
+  players: { online: 2, max: 20, list: [ 
+    {
+      "uuid": "398a6080-9fd5-44ed-ad30-0072d5efdf10",
+      "name_clean": "L0vOJ",
+    },
+    {
+      "uuid": "069a79f4-44e9-4726-a5be-fca90e38aaf5",
+      "name_clean": "Notch",
+    }
+  ] },
+};
 
 function AuthenticatedUser() {
   const { loading, error, data, refetch } = useQuery(GET_USERS);
@@ -115,8 +145,21 @@ function TailEnd()
   );
 }
 
-function Main({message, status})
+function Main()
 {
+  const [message, setMessage] = useState(json_test_false);
+  const [status, setstatus] = useState(false);
+  useEffect(() => {
+    // Express 서버의 API를 호출
+    axios.get('/api/mcs')
+      .then(response => {
+        setstatus(true);
+        setMessage(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  }, []);
   return (
     <main>
       <div className="container">
@@ -129,6 +172,115 @@ function Main({message, status})
     </main>
   );
 }
+
+function Server()
+{
+  // const [message, setMessage] = useState(json_test_false);
+  const [list, setServerList] = useState(null);
+  const [status, setServerStatus] = useState(null);
+  useEffect(() => {
+    // Express 서버의 API를 호출
+    axios.get('/api/server/list')
+      .then(response => {
+        setServerList(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+    axios.get('/api/server/status')
+      .then(response => {
+        setServerStatus(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  }, []);
+  if (!list || !status) {
+    return <div>Loading...</div>;
+  }
+  // handleServer 함수는 상태, 모드팩, 서버 값을 받아 API 요청을 보냅니다.
+  const handleServer = async (statusVal, modpackVal = '', serverVal = '') => {
+    try {
+      // URL에 쿼리 스트링 생성 (입력값은 encodeURIComponent로 안전하게 처리)
+      const url = `/api/server/control?status=${encodeURIComponent(statusVal)}&modpack=${encodeURIComponent(modpackVal)}&server=${encodeURIComponent(serverVal)}`;
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error('Server handle failed');
+      }
+      // 원하는 경우 요청 성공 후 다른 페이지로 이동
+      navigate('/');
+    } catch (err) {
+      console.error('Server handle error:', err);
+    }
+  };
+  return (
+    <main style={mainStyle}>
+      <div style={containerStyle}>
+        <h2 style={titleStyle}>Server Status</h2>
+        <div style={itemsContainerStyle}>
+          <div style={itemBoxStyle}>
+            <a style={{ cursor: "pointer", color: status.output == "active" ? "orange" : "white" }} onClick={() => handleServer("on")}>On</a>
+          </div>
+          <div style={itemBoxStyle}>
+            <a style={{ cursor: "pointer", color: status.output == "inactive" ? "orange" : "white" }} onClick={() => handleServer("off")}>Off</a>
+          </div>
+        </div>
+      </div>
+      {Object.keys(list).map((key) => (
+        <div key={key} style={containerStyle}>
+          <h2 style={titleStyle}>{key}</h2>
+          <div style={itemsContainerStyle}>
+            {list[key].map((item, index) => (
+              <div key={index} style={itemBoxStyle}>
+                <a
+                  style={{ cursor: "pointer" }}
+                  onClick={() => handleServer("change", key, item)}
+                >
+                  {item}
+                </a>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </main>
+  );
+}
+
+const mainStyle = {
+  padding: '20px',
+  fontFamily: 'Arial, sans-serif',
+};
+
+const containerStyle = {
+  border: '1px solid #ddd',
+  borderRadius: '8px',
+  padding: '16px',
+  margin: '16px 0',
+  backgroundColor: '#fff',
+};
+
+const titleStyle = {
+  fontSize: '1.5rem',
+  marginBottom: '12px',
+  borderBottom: '1px solid #eee',
+  paddingBottom: '8px',
+};
+
+const itemsContainerStyle = {
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: '12px',
+};
+
+const itemBoxStyle = {
+  backgroundColor: '#f8f8f8',
+  padding: '10px 14px',
+  borderRadius: '4px',
+  border: '1px solid #ccc',
+  fontSize: '1rem',
+  // cursor : "pointer"
+};
 
 function TextPost()
 {
@@ -185,7 +337,7 @@ function NotFound()
   );
 }
 
-export function Entrance({message, status})
+export function Entrance()
 {
   //basename="/main": React 라우터가 /main을 기준으로 동작하도록 설정.
 	return (
@@ -194,7 +346,8 @@ export function Entrance({message, status})
         <Header />
         <AuthenticatedUser />
         <Routes>
-          <Route path="/" element={<Main message={message} status={status}/>}></Route>
+          <Route path="/" element={<Main />}></Route>
+          <Route path="/server/*" element={<Server />}></Route>
           <Route path="/textpost/*" element={<TextPost />}></Route>
           <Route path="/announce/*" element={<Announce />}></Route>
           <Route path="/signin/*" element={<LoginPage />}></Route>

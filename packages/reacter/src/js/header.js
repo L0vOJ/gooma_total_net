@@ -65,6 +65,17 @@ function HeaderLogin()
         </li>
         <li>
           <NavLink 
+            to="/server" 
+            style={({ isActive }) => ({
+              color: isActive ? "orange" : "white",
+              textDecoration: "none",
+            })}
+          >
+            서버
+          </NavLink>
+        </li>
+        <li>
+          <NavLink 
             to="/textpost" 
             style={({ isActive }) => ({
               color: isActive ? "orange" : "white",

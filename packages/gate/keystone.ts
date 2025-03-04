@@ -19,6 +19,7 @@ import express, { Request, Response, NextFunction, type Express } from 'express'
 import { statusJava } from 'node-mcstatus';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import { type TypeInfo, type Context, type Config } from '.keystone/types'
+import { exec } from 'child_process'
 
 import fs from "fs"
 import http from "http"
@@ -162,6 +163,38 @@ export default withAuth<TypeInfo<Session>>(
           })
           .catch((error) => {
             console.log("reviece fail");
+          });
+        });
+        frontApp.use('/api/server/status', (req, res) => {
+          const cmd = `./home/${process.env.USER}/gooma_ws/gooma_shell/interface/service_ctl.sh is-active gooma_server.service`;
+          exec(cmd, (error, stdout, stderr) => {
+            if (error) {
+              console.error(`Error executing script: ${error}`);
+              return res.status(500).send(`Script  Error: ${error.message}`);
+            }
+            // stdout에 스크립트 실행 결과가 담깁니다.
+            res.json({output: stdout});
+          });
+        });
+        frontApp.use('/api/server/list', (req, res) => {
+          const server_list = {
+            wideview: ["wideview_creative",  "wideview_flat",  "wideview_survival"],
+            zima_modpack: ["zima", "zima_build_test"],
+            temp_etc: ["atm9sky", "laputa"] 
+          };
+          res.json(server_list);
+        });
+        frontApp.get('/api/server/control', (req, res) => {
+          const { status, modpack, server } = req.query;
+          // 실제 사용 시, 입력값에 대한 검증과 보안 처리가 필요합니다.
+          const cmd = `./home/${process.env.USER}/gooma_ws/gooma_shell/interface/server_ctl.sh ${status} ${modpack} ${server}`;
+          exec(cmd , (error, stdout, stderr) => {
+            if (error) {
+              console.error(`Error executing script: ${error}`);
+              return res.status(500).send(`Script  Error: ${error.message}`);
+            }
+            // stdout에 스크립트 실행 결과가 담깁니다.
+            return res.status(200).json({ success: true });
           });
         });
         frontApp.post('/api/logout', (req: Request, res: Response) => {
