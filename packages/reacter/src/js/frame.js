@@ -11,6 +11,7 @@ import { gql, useQuery } from '@apollo/client';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 // import KeystoneRenderer from './keystone_renderer';
 import CustomDocumentRenderer from './custom_renderer';
+import Loading from './loading';
 import axios from 'axios';
 
 const GET_TEXT_POSTS = gql`
@@ -178,6 +179,7 @@ function Server()
 {
   // const [message, setMessage] = useState(json_test_false);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [list, setServerList] = useState(null);
   const [status, setServerStatus] = useState(null);
   useEffect(() => {
@@ -203,6 +205,7 @@ function Server()
   // handleServer 함수는 상태, 모드팩, 서버 값을 받아 API 요청을 보냅니다.
   const handleServer = async (statusVal, modpackVal = '', serverVal = '') => {
     try {
+      setLoading(true);
       // URL에 쿼리 스트링 생성 (입력값은 encodeURIComponent로 안전하게 처리)
       const url = `/api/server/control?status=${encodeURIComponent(statusVal)}&modpack=${encodeURIComponent(modpackVal)}&server=${encodeURIComponent(serverVal)}`;
       const response = await fetch(url);
@@ -210,6 +213,7 @@ function Server()
         throw new Error('Server handle failed');
       }
       // 원하는 경우 요청 성공 후 다른 페이지로 이동
+      setLoading(false);
       navigate('/');
     } catch (err) {
       console.error('Server handle error:', err);
@@ -217,6 +221,7 @@ function Server()
   };
   return (
     <main style={mainStyle}>
+      {loading ? <Loading /> : null}
       <div style={containerStyle}>
         <h2 style={titleStyle}>Server Status: {status.output}</h2>
         <div style={itemsContainerStyle}>
