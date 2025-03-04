@@ -2,6 +2,7 @@ import React from "react";
 import title from '../images/title.png';
 import { NavLink } from "react-router-dom";
 import { gql, useQuery } from '@apollo/client';
+import '../css/frame.css';
 
 const GET_USERS = gql`
   query {
@@ -125,16 +126,16 @@ export default function Header() {
   // 로그인된 사용자가 없으면 null이 반환될 수 있음
   if (!data || !data.authenticatedItem) {
     return (
-      <header style={{ background: "#282c34" }}>
-        <img src={title} style={{ "height": "30vmin", "pointerEvents": "none", "borderRadius": "3vmin" }} alt="logo" />
+      <header>
+        <img src={title} className="title-logo" alt="logo" />
         <HeaderDefault/>
       </header>
     );
   }
 
   return (
-    <header style={{ background: "#282c34" }}>
-      <img src={title} style={{ "height": "30vmin", "pointerEvents": "none", "borderRadius": "3vmin" }} alt="logo" />
+    <header>
+      <img src={title} className="title-logo" alt="logo" />
       <HeaderLogin/>
     </header>
   );
